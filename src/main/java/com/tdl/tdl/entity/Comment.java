@@ -1,0 +1,26 @@
+package com.tdl.tdl.entity;
+
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@NoArgsConstructor
+@Table(name = "comments")
+public class Comment extends Timestamped {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long commentId;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "parent_id")
+    private Long parentId;
+
+
+
+}
