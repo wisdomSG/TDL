@@ -1,6 +1,7 @@
 package com.tdl.tdl.entity;
 
 
+import com.tdl.tdl.repository.UserRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,24 +16,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "username", nullable = false)
+    private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "usernmae")
-    private String username;
+    @Column(name = "profilename")
+    private String profilename;
 
     @Column(name = "userImage")
     private String userImage;
 
-    @Column(nullable = false)
+
+    @Column
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserGenderEnum gender;
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserRoleEnum role;
 
+    public User(String username, String password, String profilename, UserRoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.profilename = profilename;
+        this.role = role;
+    }
 }
