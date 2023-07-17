@@ -10,16 +10,16 @@ import lombok.Setter;
 @Setter
 public class SignupRequestDto {
 
-    @Pattern(regexp = "^[a-z0-9]{4,10}$")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$")
     @NotBlank
-    private String email;
+    private String username;
 
     @Pattern(regexp = "^[a-zA-Z0-9]{8,15}$")
     @NotBlank
     private String password;
 
     @NotBlank
-    private String username;
+    private String profilename;
 
     private boolean admin = false;
     private String adminToken = "";
