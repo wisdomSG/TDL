@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class SignupRequestDto {
 
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$")
+//    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$")
     @NotBlank
     private String username;
 
@@ -22,6 +22,7 @@ public class SignupRequestDto {
     private String profilename;
 
     private boolean admin = false;
+
     private String adminToken = "";
 
 }
