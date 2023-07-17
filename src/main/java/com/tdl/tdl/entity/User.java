@@ -1,6 +1,7 @@
 package com.tdl.tdl.entity;
 
 
+import com.tdl.tdl.repository.UserRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,4 +36,10 @@ public class User {
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserRoleEnum role;
 
+    public User(String email, String password, String username, UserRoleEnum role) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.role = role;
+    }
 }
