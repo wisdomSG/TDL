@@ -1,9 +1,12 @@
 package com.tdl.tdl.entity;
 
 
+import com.tdl.tdl.dto.PostImageResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -21,4 +24,13 @@ public class PostImage {
     @ManyToOne
     @JoinColumn(name = "postId")
     private Post post;
+
+    public PostImage(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public PostImage(String fileName, Post post) {
+        this.fileName = fileName;
+        this.post = post;
+    }
 }

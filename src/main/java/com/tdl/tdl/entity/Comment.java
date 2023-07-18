@@ -21,6 +21,14 @@ public class Comment extends Timestamped {
     @Column(name = "parent_id")
     private Long parentId;
 
+    @Column(name = "likes", nullable = false)
+    private int likesCount=0;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "postId", nullable = false)
+    private Post post;
 }
