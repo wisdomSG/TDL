@@ -1,7 +1,7 @@
 package com.tdl.tdl.entity;
 
 
-import com.tdl.tdl.repository.UserRepository;
+import com.tdl.tdl.dto.AdminUserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,4 +43,11 @@ public class User {
         this.profilename = profilename;
         this.role = role;
     }
+
+    public void AdminUpdate(AdminUserRequestDto requestDto) {
+        this.username =  requestDto.getUsername();
+        this.profilename = requestDto.getProfilename();
+        this.userImage = requestDto.getUserImage();
+    }
+
 }
