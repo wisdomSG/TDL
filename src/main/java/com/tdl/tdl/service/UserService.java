@@ -1,18 +1,18 @@
 package com.tdl.tdl.service;
 
 
-import com.tdl.tdl.dto.SignupRequestDto;
-import com.tdl.tdl.dto.UserRequestDto;
-import com.tdl.tdl.dto.UserSearchRequestDto;
-import com.tdl.tdl.dto.UserSearchResponseDto;
+import com.tdl.tdl.dto.*;
 import com.tdl.tdl.entity.User;
 import com.tdl.tdl.entity.UserRoleEnum;
 import com.tdl.tdl.jwt.JwtUtil;
 import com.tdl.tdl.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +80,27 @@ public class UserService {
 
     }
 
+    public UserResponseDto lookupProfile(Long userId) {
+        User user = findUserProfile(userId);
+        return new UserResponseDto(user);
+    }
+
+    @Transactional
+    public ResponseEntity<ApiResponseDto> updateProfile(Long userId, UserProfileRequestDto requestDto) {
+        Optional<User> inputUpdateUser = userRepository.findById(userId);
+
+        String password = passwordEncoder.encode(requestDto.getPassword());
+        User user = inputUpdateUser.get();
+        user.update(requestDto, password);
+
+        // User -> UserResponseDto
+        UserResponseDto userResponseDto = new UserResponseDto(user);
+
+        ApiResponseDto result = new ApiResponseDto(HttpStatus.OK.value(), "프로필 수정 성공", userResponseDto);
+
+        return ResponseEntity.status(200).body(result);
+    }
+
     public UserSearchResponseDto searchUser(UserSearchRequestDto dto) {
 
         List<User> user = userRepository.findByUsernameContaining(dto.getKeyword());
@@ -93,5 +114,8 @@ public class UserService {
                 new IllegalArgumentException("회원을 찾을 수 없습니다."));
     }
 
-
+    private User findUserProfile(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("회원을 찾을 수 없습니다."));
+    }
 }

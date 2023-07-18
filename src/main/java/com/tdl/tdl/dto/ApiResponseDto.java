@@ -1,11 +1,23 @@
 package com.tdl.tdl.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+
 public class ApiResponseDto {
-    private String errorMessage;
     private int statusCode;
+    private String errorMessage;
+    private Object data;
+
+    public ApiResponseDto(int status, String message) {
+        this.statusCode = status;
+        this.errorMessage = message;
+        this.data = null;
+    }
+
+    public ApiResponseDto(int status,String message, Object data) {
+        this.statusCode = status;
+        this.errorMessage = message;
+        this.data = data;
+    }
 }
