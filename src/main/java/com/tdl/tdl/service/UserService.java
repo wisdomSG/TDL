@@ -3,6 +3,8 @@ package com.tdl.tdl.service;
 
 import com.tdl.tdl.dto.SignupRequestDto;
 import com.tdl.tdl.dto.UserRequestDto;
+import com.tdl.tdl.dto.UserSearchRequestDto;
+import com.tdl.tdl.dto.UserSearchResponseDto;
 import com.tdl.tdl.entity.User;
 import com.tdl.tdl.entity.UserRoleEnum;
 import com.tdl.tdl.jwt.JwtUtil;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,6 +77,14 @@ public class UserService {
         // JWT 생성 및 헤더에 추가
         String token = jwtUtil.createToken(username, user.getRole()); // JWT 생성
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); // 헤더에 추가
+
+    }
+
+    public UserSearchResponseDto searchUser(UserSearchRequestDto dto) {
+
+        List<User> user = userRepository.findByUsernameContaining(dto.getKeyword());
+
+        return new UserSearchResponseDto(user);
 
     }
 

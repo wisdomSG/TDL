@@ -1,9 +1,7 @@
 package com.tdl.tdl.controller;
 
 
-import com.tdl.tdl.dto.ApiResponseDto;
-import com.tdl.tdl.dto.SignupRequestDto;
-import com.tdl.tdl.dto.UserRequestDto;
+import com.tdl.tdl.dto.*;
 import com.tdl.tdl.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -31,6 +29,12 @@ public class UserController {
     public ResponseEntity<String> Login(@RequestBody UserRequestDto dto, HttpServletResponse response) {
         userService.login(dto, response);
         return ResponseEntity.ok().body("로그인 성공 ");
+    }
+
+    // 유저 검색 기능
+    @GetMapping("/user/search")
+    public UserSearchResponseDto SearchUser(@RequestParam("keyword") UserSearchRequestDto dto) {
+        return userService.searchUser(dto);
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
