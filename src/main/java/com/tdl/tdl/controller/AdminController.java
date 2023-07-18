@@ -18,7 +18,7 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
     private final CategoryService categoryService;
-    @GetMapping("/") // 관리자  게시글관리 or 회원관리 조회 ok
+    @GetMapping("/") // 관리자  게시글관리 or 회원관리 조회
     public AdminPostOrUserResponseDto getCategoryBoards(@RequestParam("category")String category,
                                                         @RequestParam("page")int page,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails)  {
@@ -39,7 +39,7 @@ public class AdminController {
         return null;
     }
 
-    @GetMapping("/user/{user_id}") // 특정 유저 조회 ok
+    @GetMapping("/user/{user_id}") // 특정 유저의 게시글 조회
     public AdminSelectUserResponseDto getSelectUser(@PathVariable Long user_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return new AdminSelectUserResponseDto(adminService.getSelectUser(user_id,userDetails.getUser()),adminService.getSelectUserPosts(user_id));
     }
@@ -48,12 +48,12 @@ public class AdminController {
     public String deleteSelectUser(@PathVariable Long user_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return adminService.deleteSelectUser(user_id,userDetails.getUser());
     }
-    @DeleteMapping("/post/{post_id}") // 특정 게시글 삭제 ok
+    @DeleteMapping("/post/{post_id}") // 특정 게시글 삭제
     public String deleteSelectPost(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return adminService.deleteSelectPost(post_id,userDetails.getUser());
     }
 
-    @GetMapping("/search") // info 에 이름 입력하면 이름의 게시글 출력 이름이 없으면 null -> ok
+    @GetMapping("/search") // info 에 이름 입력하면 이름의 게시글 출력 이름이 없으면 null
     public AdminSelectUserResponseDto searchAll(@AuthenticationPrincipal UserDetailsImpl userDetails,
                             @RequestParam("page")int page,
                             @RequestParam("option")String option,
@@ -65,7 +65,7 @@ public class AdminController {
             List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
             return new AdminSelectUserResponseDto(list, pageInfo, categoryDtoList);
 
-        } else if (option.equals("내용")) { // info 에 글 내용 입력하면 일치하는 글 다 나옴 -> ok
+        } else if (option.equals("내용")) { // info 에 글 내용 입력하면 일치하는 글 다 나옴 ->
             Page<Post> pagePost = adminService.getSearchContent(page - 1, userDetails.getUser(), info);
             PageInfo pageInfo = new PageInfo((int) pagePost.getTotalElements(), page);
             List<AdminPostResponseDto> list = pagePost.map(AdminPostResponseDto::new).getContent();
