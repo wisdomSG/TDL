@@ -23,5 +23,9 @@ public class CommentLike {
     @JoinColumn(name = "userId")
     private User user;
 
+    public CommentLike (User user, Comment comment){
+        this.user = user;
+        this.comment = comment;
+    }
 
 }

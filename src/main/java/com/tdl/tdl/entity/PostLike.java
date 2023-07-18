@@ -23,4 +23,8 @@ public class PostLike {
     @JoinColumn(name = "userId")
     private User user;
 
+    public PostLike(User user, Post post) {
+        this.user = user;
+        this.post = post;
+    }
 }
