@@ -42,14 +42,6 @@ public class User {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @ColumnDefault("0")
-    @Column(name = "follow_count", nullable = false)
-    private Long followCount;
-
-    @ColumnDefault("0")
-    @Column(name = "follower_count", nullable = false)
-    private Long followerCount;
-
     @OneToMany(mappedBy = "user")
     private List<Post> postList = new ArrayList<>();
 

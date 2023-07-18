@@ -15,9 +15,6 @@ public class follow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long followId;
 
-    @Column(name = "followerId")
-    private Long followerId;
-
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
