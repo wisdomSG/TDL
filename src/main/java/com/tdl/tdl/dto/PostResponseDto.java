@@ -1,5 +1,6 @@
 package com.tdl.tdl.dto;
 
+import com.tdl.tdl.entity.Comment;
 import com.tdl.tdl.entity.Post;
 import com.tdl.tdl.entity.PostImage;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class PostResponseDto {
     private int likesCount;
     private LocalDateTime createdAt;
     private List<PostImageResponseDto> postImageList = new ArrayList<>();
+    private List<CommentResponseDto> commentList  = new ArrayList<>();
 
     public PostResponseDto(Post post) {
         this.profilename = post.getUser().getProfilename();
@@ -23,6 +25,9 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         for(PostImage postImage : post.getPostImageList()) {
             postImageList.add(new PostImageResponseDto(postImage));
+        }
+        for(Comment comment : post.getCommentList()) {
+            commentList.add(new CommentResponseDto(comment));
         }
     }
 }

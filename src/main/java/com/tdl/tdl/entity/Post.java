@@ -50,6 +50,10 @@ public class Post extends Timestamped {
 
     public void update(PostRequestDto requestDto){
         this.content = requestDto.getContents();
+        postImageList = new ArrayList<>();
+        for(String postImage : requestDto.getPostImageList()) {
+            postImageList.add(new PostImage(postImage));
+        }
     }
 
     public void increseLikesCount(){

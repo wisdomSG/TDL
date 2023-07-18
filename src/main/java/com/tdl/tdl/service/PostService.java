@@ -32,6 +32,7 @@ public class PostService {
         return postRepository.findAllByOrderByCreatedAtDesc().stream().map(PostResponseDto::new).toList();
     }
 
+    @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto, User user) {
         Post post = postRepository.save(new Post(requestDto, user));
         for(int i=0; i<requestDto.getPostImageList().size(); i++) {
@@ -46,19 +47,20 @@ public class PostService {
         return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
     }
 
+    @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
+
         Post post = findPost(id);
         confirmUser(post, user);
-        post.update(requestDto);
-
+        postImageRepository.deleteAll(post.getPostImageList());
         for(int i=0; i<requestDto.getPostImageList().size(); i++) {
-            String fileName = requestDto.getPostImageList().get(i);
-            postImageRepository.save(new PostImage(fileName, post));
+            postImageRepository.save(new PostImage(requestDto.getPostImageList().get(i), post));
         }
-
+        post.update(requestDto);
         return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
     }
 
+    @Transactional
     public String deletePost(Long id, User user) {
         Post post = findPost(id);
         confirmUser(post, user);

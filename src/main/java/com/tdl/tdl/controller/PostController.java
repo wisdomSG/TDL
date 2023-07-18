@@ -34,7 +34,7 @@ public class PostController {
     }
 
     //PATCH는 수정만 담당하며 리소스의 일부분만 수정할 때 사용하고, PUT은 리소스의 모든 속성을 수정하기 위해 사용
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public PostResponseDto updatePost (
             @PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
