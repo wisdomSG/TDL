@@ -1,11 +1,8 @@
 package com.tdl.tdl.service;
 
-import com.tdl.tdl.dto.AdminPostRequestDto;
 import com.tdl.tdl.dto.AdminPostResponseDto;
-import com.tdl.tdl.dto.AdminUserRequestDto;
 import com.tdl.tdl.dto.AdminUserResponseDto;
 import com.tdl.tdl.entity.Post;
-import com.tdl.tdl.entity.PostImage;
 import com.tdl.tdl.entity.User;
 import com.tdl.tdl.entity.UserRoleEnum;
 import com.tdl.tdl.repository.PostImageRepository;
@@ -61,40 +58,12 @@ public class AdminService {
         return postResponseDtoList;
     }
 
-    @Transactional
-    public AdminUserResponseDto updateSelectUser(Long userId, User IsAdminUser, AdminUserRequestDto adminUserRequestDto) { // 특정유저 수정
-        confirmAdminToken(IsAdminUser);
-        User user=findUserId(userId);
-        user.AdminUpdate(adminUserRequestDto);
-        return new AdminUserResponseDto(user);
-    }
     public String deleteSelectUser(Long userId, User IsAdminUser) { // 특정유저 삭제
         confirmAdminToken(IsAdminUser);
         User user=findUserId(userId);
         userRepository.delete(user);
         return "삭제성공";
     }
-//    public AdminPostResponseDto getSelectPost(Long postId, User IsAdminUser) {
-//        confirmAdminToken(IsAdminUser);
-//        Post post = findPostId(postId);
-//        return new AdminPostResponseDto(post);
-//    }
-//    @Transactional
-//    public AdminPostResponseDto updateSelectPost(Long postId, User IsAdminUser, AdminPostRequestDto adminPostRequestDto) { // 게시글 업데이트
-//        confirmAdminToken(IsAdminUser);
-//        Post post = findPostId(postId);
-//        if(!adminPostRequestDto.getPostImageList().isEmpty()){ // 파일네임이 비어있지않다면
-//            postImageRepository.deleteAll(post.getPostImageList());
-//            for(int i=0; i<adminPostRequestDto.getPostImageList().size(); i++) {
-//                postImageRepository.save(new PostImage(adminPostRequestDto.getPostImageList().get(i), post));
-//            }
-//            post.updateContent(adminPostRequestDto);
-//        }
-//        else {
-//            post.updateContent(adminPostRequestDto);
-//        }
-//        return new AdminPostResponseDto(post);
-//    }
     public String deleteSelectPost(Long postId, User IsAdminUser) { // 게시글 삭제
         confirmAdminToken(IsAdminUser);
         Post post = findPostId(postId);

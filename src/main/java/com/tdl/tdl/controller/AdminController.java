@@ -1,5 +1,4 @@
 package com.tdl.tdl.controller;
-
 import com.tdl.tdl.dto.*;
 import com.tdl.tdl.entity.Post;
 import com.tdl.tdl.entity.User;
@@ -45,25 +44,10 @@ public class AdminController {
         return new AdminSelectUserResponseDto(adminService.getSelectUser(user_id,userDetails.getUser()),adminService.getSelectUserPosts(user_id));
     }
 
-    @PutMapping("/user/{user_id}") // 특정 유저 수정 ok
-    public AdminUserResponseDto updateSelectUser(@RequestBody AdminUserRequestDto adminUserRequestDto,@PathVariable Long user_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return adminService.updateSelectUser(user_id,userDetails.getUser(),adminUserRequestDto);
-    }
-
-    @DeleteMapping("/user/{user_id}")
+    @DeleteMapping("/user/{user_id}") // 특정 유저 삭제
     public String deleteSelectUser(@PathVariable Long user_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return adminService.deleteSelectUser(user_id,userDetails.getUser());
     }
-//    @GetMapping("/post/{post_id}") // 특정 게시글 조회
-//    public AdminPostResponseDto getSelectPost(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        return adminService.getSelectPost(post_id,userDetails.getUser());
-//    }
-//    @PutMapping("/post/{post_id}") // 특정 게시글 수정 // postcontroller에 있는걸로 수정
-//    public AdminPostResponseDto updateSelectPost(@RequestBody AdminPostRequestDto adminPostRequestDto,
-//                                                 @PathVariable Long post_id,
-//                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        return adminService.updateSelectPost(post_id,userDetails.getUser(),adminPostRequestDto);
-//    }
     @DeleteMapping("/post/{post_id}") // 특정 게시글 삭제 ok
     public String deleteSelectPost(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return adminService.deleteSelectPost(post_id,userDetails.getUser());
