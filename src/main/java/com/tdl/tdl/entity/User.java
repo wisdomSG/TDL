@@ -3,6 +3,7 @@ package com.tdl.tdl.entity;
 
 import com.tdl.tdl.dto.UserProfileRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -33,7 +34,8 @@ public class User {
     @Column(name = "profilename")
     private String profilename;
 
-    @Column(name = "userImage")
+    @ColumnDefault("'default.png'")
+    @Column(name = "userImage", nullable = false)
     private String userImage;
 
     @Column(name = "introduction")
@@ -67,8 +69,8 @@ public class User {
         this.role = role;
     }
 
-    public void update(UserProfileRequestDto userProfileRequestDto, String password) {
-        this.userImage = userProfileRequestDto.getUserImage();
+    public void update(UserProfileRequestDto userProfileRequestDto, String userImage, String password) {
+        this.userImage = userImage;
         this.profilename = userProfileRequestDto.getProfileName();
         this.introduction = userProfileRequestDto.getIntroduction();
         this.phoneNumber = userProfileRequestDto.getPhoneNumber();
@@ -76,3 +78,4 @@ public class User {
     }
 
 }
+
