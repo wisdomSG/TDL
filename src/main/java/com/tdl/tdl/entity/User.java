@@ -42,6 +42,14 @@ public class User {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
+    @ColumnDefault("0")
+    @Column(name = "follow_count", nullable = false)
+    private Long followCount;
+
+    @ColumnDefault("0")
+    @Column(name = "follower_count", nullable = false)
+    private Long followerCount;
+
     @OneToMany(mappedBy = "user")
     private List<Post> postList = new ArrayList<>();
 
@@ -52,6 +60,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Post> post = new ArrayList<>();
 
+    private Long kakaoId;
+
     public User(String username, String password, String profilename, UserRoleEnum role) {
         this.username = username;
         this.password = password;
@@ -59,12 +69,26 @@ public class User {
         this.role = role;
     }
 
-    public void update(UserProfileRequestDto userProfileRequestDto, String password) {
+    public User(String username, String password, String profilename, UserRoleEnum role, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.profilename = profilename;
+        this.role = role;
+        this.kakaoId = kakaoId;
+    }
+
+    public void update(UserProfileRequestDto userProfileRequestDto, String password, Long kakaoId) {
         this.userImage = userProfileRequestDto.getUserImage();
         this.profilename = userProfileRequestDto.getProfileName();
         this.introduction = userProfileRequestDto.getIntroduction();
         this.phoneNumber = userProfileRequestDto.getPhoneNumber();
         this.password = password;
+        this.kakaoId = kakaoId;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 
 }
