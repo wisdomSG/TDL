@@ -91,7 +91,7 @@ public class UserService {
 
         String password = passwordEncoder.encode(requestDto.getPassword());
         User user = inputUpdateUser.get();
-        user.update(requestDto, password);
+        user.update(requestDto, password, user.getKakaoId());
 
         // User -> UserResponseDto
         UserResponseDto userResponseDto = new UserResponseDto(user);
