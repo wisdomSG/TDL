@@ -42,62 +42,65 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
 
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        String token = jwtUtil.resolveToken(request);
-//
-//        if(token != null) {
-//            if(!jwtUtil.validateToken(token)){
-//                jwtUtil.refreshAccessToken(token);
-//                log.info("Token Error");
-//            }
-//            Claims info = jwtUtil.getUserInfoFromToken(token);
-//            setAuthentication(info.getSubject());
-//        }
-//        try {
-//            log.info("AuthFilter -> filterChain");
-//            filterChain.doFilter(request, response);
-//        } catch (FileUploadException e) {
-//            log.error(e.getMessage());
-//        }
-//    }
-
-
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String token = jwtUtil.resolveToken(request);
 
-        String tokenValue = jwtUtil.resolveToken(req);
-
-
-        if (StringUtils.hasText(tokenValue)) { // 토큰값이 존재하는 경우 로직 수행
-            logger.info(redisUtil.getBlackList(tokenValue));
-
-            if (!jwtUtil.validateToken(tokenValue)) { // 토큰 유효성 검사
-                log.error("Token Error");
-                return;
+        if(token != null) {
+            if(!jwtUtil.validateToken(token)){
+                jwtUtil.refreshAccessToken(token);
+                log.info("Token Error");
             }
-            // Redis에 해당 accessToken logout 여부를 확인
-            String isLogout = (String) redisTemplate.opsForValue().get(tokenValue); // token에 해당하는 값을 가져옴
 
-            if(ObjectUtils.isEmpty(isLogout)){
-
-                Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
-                try {
-                    setAuthentication(info.getSubject());
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    return;
-                }
-            }
+            Claims info = jwtUtil.getUserInfoFromToken(token);
+            setAuthentication(info.getSubject());
         }
-
-        filterChain.doFilter(req, res);
+        try {
+            log.info("AuthFilter -> filterChain");
+            filterChain.doFilter(request, response);
+        } catch (FileUploadException e) {
+            log.error(e.getMessage());
+        }
     }
+
+//
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+//
+//        String tokenValue = jwtUtil.resolveToken(req);
+//
+//
+//        if (StringUtils.hasText(tokenValue)) { // 토큰값이 존재하는 경우 로직 수행
+//            logger.info(redisUtil.getBlackList(tokenValue));
+//
+//            if (!jwtUtil.validateToken(tokenValue)) { // 토큰 유효성 검사
+//                log.error("Token Error");
+//                return;
+//            }
+//            // Redis에 해당 accessToken logout 여부를 확인
+//            String isLogout = (String) redisTemplate.opsForValue().get(tokenValue); // token에 해당하는 값을 가져옴
+//
+//            if(ObjectUtils.isEmpty(isLogout)){
+//
+//                Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+//
+//                try {
+//                    setAuthentication(info.getSubject());
+//                } catch (Exception e) {
+//                    log.error(e.getMessage());
+//                    return;
+//                }
+//            }
+//        }
+//
+//        filterChain.doFilter(req, res);
+//    }
 
 
     // 인증 처리
     public void setAuthentication(String username) {
+
+        logger.info(redisTemplate.opsForValue().getOperations().hasKey(username));
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
@@ -109,7 +112,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     // 인증 객체 생성
     private Authentication createAuthentication(String username) {
-        log.info("ddd");
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }

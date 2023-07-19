@@ -72,6 +72,7 @@ public class UserService {
     }
 
 
+    @Transactional
     // 로그인 메서드
     public TokenDto login(UserRequestDto dto, HttpServletResponse response) {
         String username = dto.getUsername();
@@ -91,34 +92,37 @@ public class UserService {
 
 
 
-        if(redisUtil.hasKeyBlackList(token.substring(7))) {
-            throw new IllegalArgumentException("blackList 존재");
-        }
-
         // RefreshToken 생성 및 Redis에 저장
         String refreshToken = jwtUtil.createRefreshToken(); // RefreshToken 생성
 
         // Redis에 RefreshToken 저장
-        redisTemplate.opsForValue().set(token.substring(7), refreshToken);
+        redisTemplate.opsForValue().set(username, refreshToken);
 
 
         return new TokenDto(token, refreshToken);
 
     }
 
-    public void logout(HttpServletRequest request) {
+    @Transactional
+    public void logout(HttpServletRequest request, User user) {
         String accessToken = jwtUtil.resolveToken(request);
+        String username = user.getUsername();
+
+        // 사용자가 Redis 블랙리스트에 있는지 확인
+        if (redisTemplate.opsForValue().getOperations().hasKey(username)) {
+            throw new IllegalArgumentException("로그인이 제한된 사용자입니다.");
+        }
 
 
         if(!redisTemplate.hasKey(accessToken)) { // username으로 Redis에서 value(RefreshToken)가 존재하는지 확인
             throw new IllegalArgumentException("username에 관하여 refreshToken이 없습니다.");
         }
         // Redis에서 RefreshToken 삭제
-        redisUtil.delete(accessToken);
+        redisUtil.delete(username);
 
         // Access Token 유효시간 가져와서 BlackList에 저장
         Long expiration = jwtUtil.getExpriration(accessToken);
-        redisUtil.setBlackList(accessToken, "logout", expiration.intValue());
+        redisUtil.setBlackList(username, "logout", expiration.intValue());
 
     }
 

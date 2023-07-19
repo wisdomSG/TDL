@@ -37,8 +37,8 @@ public class UserController {
 
     // 로그아웃 기능
     @PostMapping("/logoout")
-    public ResponseEntity<String> logout (HttpServletRequest request) {
-        userService.logout(request);
+    public ResponseEntity<String> logout (@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
+        userService.logout(request, userDetails.getUser());
         return ResponseEntity.ok().body("로그아웃 성공");
     }
 
