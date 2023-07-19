@@ -52,6 +52,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Post> post = new ArrayList<>();
 
+    @ColumnDefault("0")
+    @Column(name = "follow_count", nullable = false)
+    private Long followCount;
+
+    @ColumnDefault("0")
+    @Column(name = "follower_count", nullable = false)
+    private Long followerCount;
+
     public User(String username, String password, String profilename, UserRoleEnum role) {
         this.username = username;
         this.password = password;
