@@ -45,6 +45,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> postList = new ArrayList<>();
 
+    @ColumnDefault("0")
+    @Column(name = "follow_count", nullable = false)
+    private Long followCount;
+
+    @ColumnDefault("0")
+    @Column(name = "follower_count", nullable = false)
+    private Long followerCount;
+
     @Column
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserRoleEnum role;

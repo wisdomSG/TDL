@@ -5,9 +5,15 @@ import com.tdl.tdl.dto.*;
 import com.tdl.tdl.entity.User;
 import com.tdl.tdl.entity.UserRoleEnum;
 import com.tdl.tdl.jwt.JwtUtil;
+import com.tdl.tdl.jwt.RedisUtil;
 import com.tdl.tdl.repository.UserRepository;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +32,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private final RedisUtil redisUtil;
 
     private final String ADMIN_TOKEN = "123KIM"; // ADMIN_TOKEN: 일반사용자인지 관리자인지 구분하기위해서
 
@@ -61,8 +71,9 @@ public class UserService {
 
     }
 
+
     // 로그인 메서드
-    public void login(UserRequestDto dto, HttpServletResponse response) {
+    public TokenDto login(UserRequestDto dto, HttpServletResponse response) {
         String username = dto.getUsername();
         String password = dto.getPassword();
 
@@ -77,6 +88,37 @@ public class UserService {
         // JWT 생성 및 헤더에 추가
         String token = jwtUtil.createToken(username, user.getRole()); // JWT 생성
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); // 헤더에 추가
+
+
+
+        if(redisUtil.hasKeyBlackList(token.substring(7))) {
+            throw new IllegalArgumentException("blackList 존재");
+        }
+
+        // RefreshToken 생성 및 Redis에 저장
+        String refreshToken = jwtUtil.createRefreshToken(); // RefreshToken 생성
+
+        // Redis에 RefreshToken 저장
+        redisTemplate.opsForValue().set(token.substring(7), refreshToken);
+
+
+        return new TokenDto(token, refreshToken);
+
+    }
+
+    public void logout(HttpServletRequest request) {
+        String accessToken = jwtUtil.resolveToken(request);
+
+
+        if(!redisTemplate.hasKey(accessToken)) { // username으로 Redis에서 value(RefreshToken)가 존재하는지 확인
+            throw new IllegalArgumentException("username에 관하여 refreshToken이 없습니다.");
+        }
+        // Redis에서 RefreshToken 삭제
+        redisUtil.delete(accessToken);
+
+        // Access Token 유효시간 가져와서 BlackList에 저장
+        Long expiration = jwtUtil.getExpriration(accessToken);
+        redisUtil.setBlackList(accessToken, "logout", expiration.intValue());
 
     }
 
@@ -118,4 +160,7 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("회원을 찾을 수 없습니다."));
     }
+
+
+
 }
