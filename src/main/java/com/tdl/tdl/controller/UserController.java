@@ -1,10 +1,16 @@
 package com.tdl.tdl.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tdl.tdl.dto.*;
-import com.tdl.tdl.security.UserDetailsImpl;
+
+import com.tdl.tdl.jwt.JwtUtil;
+import com.tdl.tdl.service.KakaoService;
 import com.tdl.tdl.service.UserService;
+import jakarta.servlet.http.Cookie;
+import com.tdl.tdl.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final KakaoService kakaoService;
 
     // 회원가입 기능
     @PostMapping("/user/signup")
@@ -49,6 +56,17 @@ public class UserController {
     @GetMapping("/user/search")
     public UserSearchResponseDto SearchUser(@RequestParam("keyword") UserSearchRequestDto dto) {
         return userService.searchUser(dto);
+    }
+
+    @GetMapping("/user/login")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.kakaoLogin(code);
+
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
