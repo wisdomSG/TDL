@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,7 +26,8 @@ public class ProfileController {
 
     @PutMapping("/{userId}")
     @ResponseBody
-    public ResponseEntity<ApiResponseDto> updateProfile(@PathVariable Long userId, @RequestBody UserProfileRequestDto userProfileRequestDto) {
-        return userService.updateProfile(userId, userProfileRequestDto);
+    public ResponseEntity<ApiResponseDto> updateProfile(@PathVariable Long userId, @RequestPart("userInfo") UserProfileRequestDto userProfileRequestDto,
+                                                        @RequestPart("imgUrl") MultipartFile multipartFile) {
+        return userService.updateProfile(userId, multipartFile, userProfileRequestDto);
     }
 }

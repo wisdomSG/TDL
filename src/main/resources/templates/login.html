@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -15,64 +16,54 @@
 </head>
 <body>
 <div id="login-form">
-    <div id="login-title">Log into Select Shop</div>
-    <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=7d8a8b5c3e1a8e520c85fa9213f0537c&redirect_uri=http://localhost:8080/tdl/user/login&response_type=code'">
-        카카오로 로그인하기
-    </button>
-    <button id="login-id-btn" onclick="location.href='/api/user/signup'">
-        회원 가입하기
-    </button>
-    <div>
+    <div id="logo"></div>
+    <br>
+    <br>
+    <div id = "login-box">
         <div class="login-id-label">아이디</div>
-        <input type="text" name="username" id="username" class="login-input-box">
-
+        <input type="text" name="username" id="username" placeholder="Email" class="login-input-box">
         <div class="login-id-label">비밀번호</div>
-        <input type="password" name="password" id="password" class="login-input-box">
-
-        <button id="login-id-submit" onclick="onLogin()">로그인</button>
+        <input type="password" name="password" id="password" placeholder="Password" class="login-input-box">
+        <button id="signup-btn" onclick="location.href='/tdl/user/signup'">
+            회원가입 하시겠습니까?
+        </button>
+        <button id="login-id-submit" class="confirm-btn" onclick="onLogin()">로그인</button>
+        <p class="or-label">또는</p>
+        <button id="login-kakao-btn" class="confirm-btn" onclick="onLogin()">카카오 로그인</button>
     </div>
-    <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
+    <div id="login-failed" style="display: none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
 </div>
 </body>
 <script>
-    $(document).ready(function () {
-        // 토큰 삭제
-        Cookies.remove('Authorization', {path: '/'});
-    });
-
-    const href = location.href;
-    const queryString = href.substring(href.indexOf("?") + 1)
-    if (queryString === 'error') {
-        const errorDiv = document.getElementById('login-failed');
-        errorDiv.style.display = 'block';
-    }
-
     const host = 'http://' + window.location.host;
-
+    // 쿠키 만료 시간(초 단위) 설정
+    var maxAgeInSeconds = 60 * 60; // 1시간
+    // 현재 시간에 만료 시간(초 단위)을 더한 값을 구함
+    var expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + (maxAgeInSeconds * 1000));
     function onLogin() {
         let username = $('#username').val();
         let password = $('#password').val();
-
         $.ajax({
             type: "POST",
-            url: `/api/user/login`,
+            url: `/tdl/user/login`,
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
         })
             .done(function (res, status, xhr) {
                 const token = xhr.getResponseHeader('Authorization');
-
-                Cookies.set('Authorization', token, {path: '/'})
-
+                // 쿠키 저장
+                Cookies.set('Authorization', token, {path: '/', expires: expirationDate});
                 $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
                     jqXHR.setRequestHeader('Authorization', token);
                 });
-
+                alert("로그인 성공 !")
                 window.location.href = host;
             })
-            .fail(function (jqXHR, textStatus) {
-                alert("Login Fail");
-                window.location.href = host + '/api/user/login-page?error'
+            .fail(function (xhr, textStatus, errorThrown) {
+                alert("로그읜 실패 !")
+                console.log('statusCode: ' + xhr.status);
+                window.location.href = host + '/tdl/user/login'
             });
     }
 </script>

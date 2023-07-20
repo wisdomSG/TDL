@@ -1,9 +1,10 @@
 package com.tdl.tdl.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-
+@Setter
 public class ApiResponseDto {
     private int statusCode;
     private String errorMessage;
@@ -12,7 +13,6 @@ public class ApiResponseDto {
     public ApiResponseDto(int status, String message) {
         this.statusCode = status;
         this.errorMessage = message;
-        this.data = null;
     }
 
     public ApiResponseDto(int status,String message, Object data) {

@@ -1,6 +1,5 @@
 package com.tdl.tdl.service;
 
-import com.tdl.tdl.dto.PostImageResponseDto;
 import com.tdl.tdl.dto.PostRequestDto;
 import com.tdl.tdl.dto.PostResponseDto;
 import com.tdl.tdl.entity.*;
@@ -10,14 +9,11 @@ import com.tdl.tdl.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,43 +23,77 @@ public class PostService {
     private final PostImageRepository postImageRepository;
     private final MessageSource messageSource;
     private final PostLikeRepository postLikeRepository;
+    private final AwsS3Service awsS3Service;
 
+    // 게시물 조회
     public List<PostResponseDto> getPosts() {
         return postRepository.findAllByOrderByCreatedAtDesc().stream().map(PostResponseDto::new).toList();
     }
 
+    // 게시물 등록
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, User user) {
-        Post post = postRepository.save(new Post(requestDto, user));
-        for(int i=0; i<requestDto.getPostImageList().size(); i++) {
-            String fileName = requestDto.getPostImageList().get(i);
-            postImageRepository.save(new PostImage(fileName, post));
-        }
+    public PostResponseDto createPost(PostRequestDto requestDto, List<MultipartFile> multipartFiles, User user) {
+        // Aws에 이미지 저장
+        List<String> imgPaths = awsS3Service.uploadFile(multipartFiles);
+
+        Post post = postRepository.save(new Post(requestDto, imgPaths, user));
+        postRepository.save(post);
+/*
+        List<String> imgList = new ArrayList<>();
+        for (String imgUrl : imgPaths) {
+            PostImage img = new PostImage(imgUrl, post);
+            postImageRepository.save(img);
+            imgList.add(img.getFileName());
+        }*/
         return new PostResponseDto(post);
     }
 
+    // 게시물 선택 조회
     public PostResponseDto getSelectPost(Long id) {
         Post post = findPost(id);
         return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
     }
 
+    // 게시물 수정
     @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
-
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, List<MultipartFile> multipartFiles, User user) {
         Post post = findPost(id);
         confirmUser(post, user);
-        postImageRepository.deleteAll(post.getPostImageList());
-        for(int i=0; i<requestDto.getPostImageList().size(); i++) {
-            postImageRepository.save(new PostImage(requestDto.getPostImageList().get(i), post));
+
+        // 수정 하기 전 등록된 이미지 삭제
+        List<String> fileName = new ArrayList<>();
+        for(PostImage postImage : post.getPostImageList()) {
+            fileName.add(postImage.getFileName());
         }
-        post.update(requestDto);
+        awsS3Service.deleteFiles(fileName);
+        postImageRepository.deleteAll(post.getPostImageList());
+
+        // Aws에 수정된 이미지 저장
+        List<String> imgPaths = awsS3Service.uploadFile(multipartFiles);
+
+        List<String> imgList = new ArrayList<>();
+        for (String imgUrl : imgPaths) {
+            PostImage img = new PostImage(imgUrl, post);
+            postImageRepository.save(img);
+            imgList.add(img.getFileName());
+        }
+        post.update(requestDto, imgList);
         return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
     }
 
+    // 게시물 삭제
     @Transactional
     public String deletePost(Long id, User user) {
         Post post = findPost(id);
         confirmUser(post, user);
+
+        // 등록된 이미지 삭제
+        List<String> imgPaths = new ArrayList<>();
+        for(PostImage postImage : post.getPostImageList()) {
+            imgPaths.add(postImage.getFileName());
+        }
+        awsS3Service.deleteFiles(imgPaths);
+
         postRepository.delete(post);
         String msg ="삭제 완료";
         return msg;

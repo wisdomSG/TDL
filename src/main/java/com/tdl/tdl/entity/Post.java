@@ -1,7 +1,6 @@
 package com.tdl.tdl.entity;
 
 
-import com.tdl.tdl.dto.PostImageResponseDto;
 import com.tdl.tdl.dto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,18 +39,18 @@ public class Post extends Timestamped {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostLike> postLikesList = new ArrayList<>();
 
-    public Post(PostRequestDto requestDto, User user) {
+    public Post(PostRequestDto requestDto, List<String> imgPaths, User user) {
         this.content = requestDto.getContents();
         this.user = user;
-        for(String postImage : requestDto.getPostImageList()) {
+        for(String postImage : imgPaths) {
             postImageList.add(new PostImage(postImage));
         }
     }
 
-    public void update(PostRequestDto requestDto){
+    public void update(PostRequestDto requestDto, List<String> imgPaths){
         this.content = requestDto.getContents();
         postImageList = new ArrayList<>();
-        for(String postImage : requestDto.getPostImageList()) {
+        for(String postImage : imgPaths) {
             postImageList.add(new PostImage(postImage));
         }
     }

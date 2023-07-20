@@ -3,6 +3,7 @@ package com.tdl.tdl.entity;
 
 import com.tdl.tdl.dto.UserProfileRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +36,8 @@ public class User {
     @Column(name = "profilename")
     private String profilename;
 
-    @Column(name = "userImage")
+    @ColumnDefault("'default.png'")
+    @Column(name = "userImage", nullable = false)
     private String userImage;
 
     @Column(name = "introduction")
@@ -44,20 +46,23 @@ public class User {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @ColumnDefault("0")
-    @Column(name = "followersCount", nullable = false)
-    private Long followersCount;
 
-    @ColumnDefault("0")
-    @Column(name = "followingCount", nullable = false)
-    private Long followingCount;
+    @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
 
-    @OneToMany(mappedBy = "user")
     private List<Post> postList = new ArrayList<>();
+
+    @ColumnDefault("0")
+    @Column(name = "follow_count", nullable = false)
+    private Long followCount;
+
+    @ColumnDefault("0")
+    @Column(name = "follower_count", nullable = false)
+    private Long followerCount;
 
     @Column
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserRoleEnum role;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Post> post = new ArrayList<>();
@@ -71,6 +76,7 @@ public class User {
         this.role = role;
     }
 
+
     public User(String username, String password, String profilename, UserRoleEnum role, Long kakaoId) {
         this.username = username;
         this.password = password;
@@ -79,8 +85,8 @@ public class User {
         this.kakaoId = kakaoId;
     }
 
-    public void update(UserProfileRequestDto userProfileRequestDto, String password, Long kakaoId) {
-        this.userImage = userProfileRequestDto.getUserImage();
+    public void update(UserProfileRequestDto userProfileRequestDto, String userImage, String password) {
+        this.userImage = userImage;
         this.profilename = userProfileRequestDto.getProfileName();
         this.introduction = userProfileRequestDto.getIntroduction();
         this.phoneNumber = userProfileRequestDto.getPhoneNumber();
@@ -93,3 +99,4 @@ public class User {
         return this;
     }
 }
+

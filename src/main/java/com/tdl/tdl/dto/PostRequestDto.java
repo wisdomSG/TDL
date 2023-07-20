@@ -8,5 +8,4 @@ import java.util.List;
 @Getter
 public class PostRequestDto {
     private String contents;
-    private List<String> postImageList = new ArrayList<>();
 }
