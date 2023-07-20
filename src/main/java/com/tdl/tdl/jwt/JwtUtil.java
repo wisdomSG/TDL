@@ -145,7 +145,7 @@ public class JwtUtil {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
             if (redisUtil.hasKeyBlackList(token)) {
-                throw new RuntimeException("로그아웃을 했습니다 !");
+                throw new RuntimeException("로그인한 기록이 없습니다 !");
             }
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
