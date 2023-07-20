@@ -8,13 +8,16 @@ import com.tdl.tdl.jwt.JwtUtil;
 import com.tdl.tdl.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -29,6 +32,9 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "123KIM"; // ADMIN_TOKEN: 일반사용자인지 관리자인지 구분하기위해서
 
+    private final AwsS3Service awsS3Service;
+
+    private final MessageSource messageSource;
 
     // 회원가입 메서드
     public void signup(SignupRequestDto dto) {
@@ -86,12 +92,25 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<ApiResponseDto> updateProfile(Long userId, UserProfileRequestDto requestDto) {
-        Optional<User> inputUpdateUser = userRepository.findById(userId);
-
+    public ResponseEntity<ApiResponseDto> updateProfile(Long userId, MultipartFile multipartFile, UserProfileRequestDto requestDto) {
         String password = passwordEncoder.encode(requestDto.getPassword());
-        User user = inputUpdateUser.get();
-        user.update(requestDto, password);
+
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new IllegalArgumentException(messageSource.getMessage(
+                        "not.exist.post",
+                        null,
+                        "해당프로필이 존재하지 않습니다",
+                        Locale.getDefault()
+                ))
+        );
+        String userImage = "default.img";
+        if(!multipartFile.isEmpty()){
+            String fileName = user.getUserImage();
+            awsS3Service.deleteFile(fileName);
+            userImage = awsS3Service.uploadProfileFile(multipartFile);
+        }
+
+        user.update(requestDto, userImage, password);
 
         // User -> UserResponseDto
         UserResponseDto userResponseDto = new UserResponseDto(user);
