@@ -44,24 +44,29 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.resolveToken(request);
+        try {
+            String token = jwtUtil.resolveToken(request);
 
-        if(token != null) {
-            if(!jwtUtil.validateToken(token)){
-                jwtUtil.refreshAccessToken(token);
-                log.info("Token Error");
+            if (token != null) {
+                if (!jwtUtil.validateToken(token)) {
+                    jwtUtil.refreshAccessToken(token);
+                    log.info("Token Error");
+                }
+
+                Claims info = jwtUtil.getUserInfoFromToken(token);
+                setAuthentication(info.getSubject());
             }
 
-            Claims info = jwtUtil.getUserInfoFromToken(token);
-            setAuthentication(info.getSubject());
-        }
-        try {
             log.info("AuthFilter -> filterChain");
             filterChain.doFilter(request, response);
         } catch (FileUploadException e) {
             log.error(e.getMessage());
+        } catch (ServletException e) {
+            log.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
+
 
 //
 //    @Override

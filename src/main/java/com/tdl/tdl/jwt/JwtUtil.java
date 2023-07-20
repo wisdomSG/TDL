@@ -144,9 +144,9 @@ public class JwtUtil {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
-//            if (redisUtil.hasKeyBlackList(token)) {
-//                throw new RuntimeException("로그아웃 완료 !");
-//            }
+            if (redisUtil.hasKeyBlackList(token)) {
+                throw new RuntimeException("로그아웃을 했습니다 !");
+            }
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");

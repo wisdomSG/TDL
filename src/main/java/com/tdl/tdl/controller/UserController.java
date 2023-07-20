@@ -36,12 +36,15 @@ public class UserController {
     }
 
     // 로그아웃 기능
-    @PostMapping("/logoout")
-    public ResponseEntity<String> logout (@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
-        userService.logout(request, userDetails.getUser());
-        return ResponseEntity.ok().body("로그아웃 성공");
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
+        try {
+            userService.logout(request, userDetails.getUser());
+            return ResponseEntity.ok().body("로그아웃 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 제한된 사용자입니다.");
+        }
     }
-
     // 유저 검색 기능
     @GetMapping("/user/search")
     public UserSearchResponseDto SearchUser(@RequestParam("keyword") UserSearchRequestDto dto) {
