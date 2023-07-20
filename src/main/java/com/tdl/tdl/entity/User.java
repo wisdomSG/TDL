@@ -44,7 +44,7 @@ public class User {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
     private List<Post> postList = new ArrayList<>();
 
     @ColumnDefault("0")
@@ -58,17 +58,6 @@ public class User {
     @Column
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserRoleEnum role;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Post> post = new ArrayList<>();
-
-    @ColumnDefault("0")
-    @Column(name = "follow_count", nullable = false)
-    private Long followCount;
-
-    @ColumnDefault("0")
-    @Column(name = "follower_count", nullable = false)
-    private Long followerCount;
 
     public User(String username, String password, String profilename, UserRoleEnum role) {
         this.username = username;

@@ -30,6 +30,11 @@
     <div class="login-id-label">닉네임</div>
     <input type="text" name="profilename" id="profilename" placeholder="Profilename" class="login-input-box">
 
+    <div>
+      <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">관리자
+      <input id="admin-token" type="password" name="adminToken" placeholder="관리자 암호" class="login-input-box" style="display:none">
+    </div>
+
     <button id="login-id-submit" class="confirm-btn" style="margin: 50px;" onclick="signup()">
       회원 가입
     </button>
@@ -39,11 +44,29 @@
 <script>
   const host = 'http://' + window.location.host;
 
+
+  function onclickAdmin() {
+    // Get the checkbox
+    var checkBox = document.getElementById("admin-check");
+    // Get the output text
+    var box = document.getElementById("admin-token");
+
+    // If the checkbox is checked, display the output text
+    if (checkBox.checked == true){
+      box.style.display = "block";
+    } else {
+      box.style.display = "none";
+    }
+  }
+
   function signup() {
 
     let username = $('#username').val();
     let password = $('#password').val();
     let profilename = $('#profilename').val();
+    let admin = $('#admin-check').prop('checked'); // 관리자 체크 여부를 boolean 값으로 가져옴// 관리자 체크 여부를 boolean 값으로 가져옴
+    let adminToken = $('#admin-token').val();
+
 
     $.ajax({
       type: "POST",
@@ -52,7 +75,9 @@
       data: JSON.stringify({
         username: username,
         password: password,
-        profilename: profilename
+        profilename: profilename,
+        admin: admin,
+        adminToken: adminToken
       }),
     })
       .done(function () {

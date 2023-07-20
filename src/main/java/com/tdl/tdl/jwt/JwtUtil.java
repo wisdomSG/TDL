@@ -117,7 +117,6 @@ public class JwtUtil {
 
         return null;
     }
-
     private boolean isAccessTokenExpired(String accessToken) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();

@@ -58,9 +58,9 @@ public class UserService {
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
 
-        if(!dto.getAdminToken().isEmpty()) { // adminToken을 입력했다면
-            dto.setAdmin(true); // Admin = true;
-        }
+//        if(!dto.getAdminToken().isEmpty()) { // adminToken을 입력했다면
+//            dto.setAdmin(true); // Admin = true;
+//        }
 
         if (dto.isAdmin()) { // Admin이 true 이면
             if(!ADMIN_TOKEN.equals(dto.getAdminToken())) {
