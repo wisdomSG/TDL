@@ -1,4 +1,5 @@
 package com.tdl.tdl.controller;
+
 import com.tdl.tdl.dto.*;
 import com.tdl.tdl.entity.Post;
 import com.tdl.tdl.entity.User;
@@ -18,6 +19,7 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
     private final CategoryService categoryService;
+
     @GetMapping("/") // 관리자  게시글관리 or 회원관리 조회
     public AdminPostOrUserResponseDto getCategoryBoards(@RequestParam("category")String category,
                                                         @RequestParam("page")int page,
@@ -74,5 +76,17 @@ public class AdminController {
 
         }
         return null;
+    }
+
+    @GetMapping("/home")
+    public AdminHome AdminHome(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        AdminUserResponseDto userResponseDto = adminService.getAdminUserInfo(userDetails.getUser());
+        List<AdminTotalUserResponse> totalUser=adminService.getTotalUser();
+        List<AdminTotalPostResponse> totalPost=adminService.getTotalPost();
+        List<AdminDayOfTheWeekResponse> DayOfTheWeekResponse =adminService.getDayOfTheWeek();
+        List<AdminPostResponseDto> TopThreeLike = adminService.getTopThreeLike();
+        List<AdminUserResponseDto> TopThreeFollowCount = adminService.getTopThreeFollowCount();
+        List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
+        return new AdminHome(userResponseDto,totalUser,totalPost,DayOfTheWeekResponse,TopThreeLike,TopThreeFollowCount,categoryDtoList);
     }
 }
