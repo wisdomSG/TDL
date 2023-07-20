@@ -2,12 +2,16 @@ package com.tdl.tdl.service;
 
 
 import com.tdl.tdl.dto.*;
+import com.tdl.tdl.entity.Follow;
 import com.tdl.tdl.entity.User;
 import com.tdl.tdl.entity.UserRoleEnum;
 import com.tdl.tdl.jwt.JwtUtil;
+import com.tdl.tdl.repository.FollowingRepository;
 import com.tdl.tdl.repository.UserRepository;
+import com.tdl.tdl.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,15 +19,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
+    private final FollowingRepository followingRepository;
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
+    private final MessageSource messageSource;
 
     private final JwtUtil jwtUtil;
 
@@ -109,6 +114,81 @@ public class UserService {
 
     }
 
+
+
+    public ResponseEntity<String> followUser(Long userId, UserDetailsImpl userDetails) {
+        User user = findUserId(userId); // 팔로우하는 사용자
+        User user1 = userDetails.getUser(); // 팔로우 받는 사용자
+
+        if (user.getUserId().equals(user1.getUserId())) {
+            return ResponseEntity.badRequest().body("실패");
+        } else {
+            if (followingRepository.findByFollowerAndFollowing(user, user1).isPresent()) {
+                throw new IllegalArgumentException(messageSource.getMessage(
+                        "already.like",
+                        null,
+                        "이미 팔로우한 유저입니다.",
+                        Locale.getDefault()
+                ));
+            } else {
+                Follow follow = new Follow(user, user1);
+                followingRepository.save(follow);
+                user.setFollowersCount(user.getFollowersCount() + 1);
+                user1.setFollowingCount(user1.getFollowingCount() + 1);
+                userRepository.save(user);
+                userRepository.save(user1);
+            }
+            return ResponseEntity.ok().body("성공");
+        }
+    }
+
+    public void unfollowUser(Long userId, UserDetailsImpl userDetails) {
+        User user = findUserId(userId); // 팔로우하는 사용자
+        User user1 = userDetails.getUser(); // 팔로우 받는 사용자
+        
+        if (user.getUserId().equals(user1.getUserId())) {
+            System.out.println("실패");
+        } else {
+            if (followingRepository.findByFollowerAndFollowing(user, user1).isEmpty()) {
+                throw new IllegalArgumentException(messageSource.getMessage(
+                        "already.delete.like",
+                        null,
+                        "팔로우가 되어있지 않은 유저입니다.",
+                        Locale.getDefault()
+                ));
+            } else {
+                Optional<Follow> follow = followingRepository.findByFollowerAndFollowing(user, user1);
+                followingRepository.delete(follow.get());
+                user.setFollowersCount(user.getFollowersCount() - 1);
+                user1.setFollowingCount(user1.getFollowingCount() - 1);
+                userRepository.save(user);
+                userRepository.save(user1);
+            }
+        }
+        System.out.println("성공");
+
+//        if(followingRepository.findByUser(user).isPresent()) {
+//            Follow follow = new Follow(user);
+//            followingRepository.delete(follow);
+//            user.setFollowersCount(user.getFollowersCount() - 1);
+//            user1.setFollowingCount(user1.getFollowingCount() - 1);
+//            userRepository.save(user);
+//            userRepository.save(user1);
+//        } else {
+//            throw new IllegalArgumentException("팔로우가 되어 있지 않습니다.");
+    }
+
+//    private List<Post> getFollowerPosts(UserDetailsImpl userDetails) {
+//        User user = userDetails.getUser();
+//
+//        List<Follow> follows = followingRepository.findAllByFollowing(user);
+//        List<Long> followerIds = follows.stream().map((Follow e) -> e.getFollower().getUserId()).toList();
+//
+//        List<Post> posts = postRepository.findAllByUserId(followerIds);
+//
+//        return posts;
+//    }
+
     private User findUser(String username) {
         return userRepository.findByUsername(username).orElseThrow(() ->
                 new IllegalArgumentException("회원을 찾을 수 없습니다."));
@@ -117,5 +197,11 @@ public class UserService {
     private User findUserProfile(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("회원을 찾을 수 없습니다."));
+    }
+
+    private User findUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 게시물은 존재하지 않습니다.")
+        );
     }
 }

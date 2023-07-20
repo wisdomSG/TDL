@@ -5,6 +5,7 @@ import com.tdl.tdl.dto.UserProfileRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity
 @DynamicInsert
 @DynamicUpdate
@@ -43,12 +45,12 @@ public class User {
     private String phoneNumber;
 
     @ColumnDefault("0")
-    @Column(name = "follow_count", nullable = false)
-    private Long followCount;
+    @Column(name = "followersCount", nullable = false)
+    private Long followersCount;
 
     @ColumnDefault("0")
-    @Column(name = "follower_count", nullable = false)
-    private Long followerCount;
+    @Column(name = "followingCount", nullable = false)
+    private Long followingCount;
 
     @OneToMany(mappedBy = "user")
     private List<Post> postList = new ArrayList<>();
@@ -90,5 +92,4 @@ public class User {
         this.kakaoId = kakaoId;
         return this;
     }
-
 }
