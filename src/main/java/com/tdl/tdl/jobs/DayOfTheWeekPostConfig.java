@@ -57,19 +57,23 @@ public class DayOfTheWeekPostConfig {
                 LocalDate localDate2 = LocalDate.parse(dats, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 DayOfWeek dayOfWeek = localDate2.getDayOfWeek();
                 int dayOfWeekNumber = dayOfWeek.getValue();
-                if (dayOfWeekNumber == 1){
+                if (dayOfWeekNumber==7 ){
                     sun = Long.valueOf((count));
-                } else if (dayOfWeekNumber == 2) {
+                } else if (dayOfWeekNumber==1) {
                     mon = Long.valueOf((count));
-                } else if (dayOfWeekNumber == 3) {
+                } else if (dayOfWeekNumber==2) {
+
                     tue = Long.valueOf((count));
-                } else if (dayOfWeekNumber == 4) {
+                } else if (dayOfWeekNumber==3) {
+
                     wed = Long.valueOf((count));
-                } else if (dayOfWeekNumber == 5) {
+                } else if (dayOfWeekNumber==4) {
+
                     thu = Long.valueOf((count));
-                } else if (dayOfWeekNumber == 6) {
+                } else if (dayOfWeekNumber==5) {
+
                     fri = Long.valueOf((count));
-                } else if (dayOfWeekNumber == 7) {
+                } else if (dayOfWeekNumber==6) {
                     sat = Long.valueOf((count));
                 }
             }
