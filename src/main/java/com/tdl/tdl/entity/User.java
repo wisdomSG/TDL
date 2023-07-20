@@ -52,12 +52,12 @@ public class User extends Timestamped{
     private List<Post> postList = new ArrayList<>();
 
     @ColumnDefault("0")
-    @Column(name = "follow_count", nullable = false)
-    private Long followCount;
+    @Column(name = "followersCount", nullable = false)
+    private Long followersCount;
 
     @ColumnDefault("0")
-    @Column(name = "follower_count", nullable = false)
-    private Long followerCount;
+    @Column(name = "followingCount", nullable = false)
+    private Long followingCount;
 
     @Column
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
