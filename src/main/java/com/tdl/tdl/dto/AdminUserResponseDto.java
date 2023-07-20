@@ -14,7 +14,7 @@ public class AdminUserResponseDto {
         this.id = user.getUserId();
         this.username = user.getUsername();
         this.userImage = user.getUserImage();
-        this.followCount = user.getFollowCount();
+        this.followCount = user.getFollowersCount();
     }
 
 }

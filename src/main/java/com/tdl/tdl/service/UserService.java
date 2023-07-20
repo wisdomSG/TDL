@@ -47,7 +47,6 @@ public class UserService {
 
     private final AwsS3Service awsS3Service;
 
-    private final MessageSource messageSource;
 
     // 회원가입 메서드
     public void signup(SignupRequestDto dto) {

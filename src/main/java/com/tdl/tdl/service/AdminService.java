@@ -178,16 +178,16 @@ public class AdminService {
     }
 
     public List<AdminUserResponseDto> getTopThreeFollowCount() {
-        if (userRepository.findAllByOrderByFollowCountDesc().size() < 3  ) {
+        if (userRepository.findAllByOrderByFollowersCountDesc().size() < 3  ) {
             List<AdminUserResponseDto> userResponseDto = new ArrayList<>();
-            List<User> users = userRepository.findAllByOrderByFollowCountDesc();
+            List<User> users = userRepository.findAllByOrderByFollowersCountDesc();
             for (User user : users) {
                 userResponseDto.add(new AdminUserResponseDto(user));
             }
             return userResponseDto;
         } else {
             List<AdminUserResponseDto> userResponseDtos = new ArrayList<>();
-            List<User> users = userRepository.findAllByOrderByFollowCountDesc();
+            List<User> users = userRepository.findAllByOrderByFollowersCountDesc();
             for (int i = 0; i < 3; i++) {
                 userResponseDtos.add(new AdminUserResponseDto(users.get(i)));
             }
