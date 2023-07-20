@@ -59,9 +59,8 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/tdl/user/**").permitAll() // '/api'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.GET, "/tdl/post/**").permitAll() // 조회 메서드 허용
-                        .anyRequest().permitAll()
 //                        .anyRequest().authenticated() // 그 외 모든 요청 인증처리
-
+                        .anyRequest().permitAll()
         );
 
         // 필터 관리

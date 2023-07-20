@@ -18,7 +18,7 @@ public class JobScheduler {
     @Autowired
     @Qualifier("TotalPostJob")
     private final Job TotalPostJob;
-    /* job 2 주입 */
+
     @Autowired
     @Qualifier("TotalUserJob")
     private final Job TotalUserJob;
@@ -30,7 +30,6 @@ public class JobScheduler {
     private final Job DayOfTheWeekPostJob;
 
 
-    // 5초마다 실행
     @Scheduled(cron  ="0 0 0 * * *")
     public void executeJob () {
         try {
