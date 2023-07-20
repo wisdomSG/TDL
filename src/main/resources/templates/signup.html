@@ -36,5 +36,36 @@
   </div>
 </div>
 </body>
+<script>
+  const host = 'http://' + window.location.host;
 
+  function signup() {
+
+    let username = $('#username').val();
+    let password = $('#password').val();
+    let profilename = $('#profilename').val();
+
+    $.ajax({
+      type: "POST",
+      url: `/tdl/user/signup`,
+      contentType: "application/json",
+      data: JSON.stringify({
+        username: username,
+        password: password,
+        profilename: profilename
+      }),
+    })
+      .done(function () {
+                alert('회원가입완료 !');
+                window.location.href = host + '/tdl/user/login';
+              }
+      )
+      .fail(function (xhr, textStatus, errorThrown) {
+        console.log('statusCode: ' + xhr.status);
+        console.log('뭔가 잘못되었습니다...');
+
+      });
+
+  }
+</script>
 </html>
