@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>main_page</title>
+    <link rel = "stylesheet" href="main.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+</head>
+<body>
+<header class="logo fixedclear">
+    <a href="main.html"><img class = "brand_logo" src="img/brand_logo.png" alt="logo"></a>
+    <div class = "other_logo">
+        <ul class="icon">
+            <li>
+                <a href="main.html"><img class = "home" src="img/home.png" alt="logo"></a>
+            </li>
+            <li>
+                <a href="#"><img class = "plus" src="img/plus.png" alt="plus"></a>
+            </li>
+            <li>
+                <a href="#"><img class = "heart" src="img/heart.png" alt="heart"></a>
+            </li>
+            <li>
+                <a href="#"><img class="my_account" src="img/my_photo.jpg" alt="my_account"></a>
+            </li>
+        </ul>
+    </div>
+</header>
+<div class="main_container">
+    <div class ="middle_Top">
+        <ul>
+            <li>
+                <a href="#"><img class="my_photo" src="img/my_photo.jpg" alt="my_photo"></a>
+            </li>
+        </ul>
+        <ul>
+            <li class="my_account">
+                <a href="#" type="text">hahaha</a>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="#"><img class="dot" src="img/dot.png" alt="dot"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="middle_Box">
+        <img class = "photo" src="img/photo.jpg" alt="photo">
+    </div>
+    <div class="middle_review">
+        <div class = "review_icon">
+            <ul class="fixedclear"> <!--좋아요 부분이 아이콘 밑으로 내려가면 clear both를 주어야한다-->
+                <button class="heartBtn" onclick="addLike()"><i class=" xi-heart-o xi-2x"></i>
+                </button>
+                <li>
+                    <button class="spBubble"><i class="xi-speech-o xi-2x"></i></button>
+                </li>
+                <li>
+                    <button class="send"><i class="xi-location-arrow xi-2x"></i></button>
+                </li>
+                <li>
+                    <button class="bookmark"><i class="xi-bookmark-o xi-2x"></i></button>
+                </li>
+            </ul>
+        </div>
+        <div class="comment_part">
+            <ul>
+                <li class="like_count" onchange="countPlus()">
+                    좋아요 1324개
+                </li>
+            </ul>
+            <div>
+                <ul>
+                    <li class="li">
+                        <div>
+                            <div class="comment">
+                                <span class="user">heewo</span>
+                                <span class="userComment">멋지네!!</span>
+
+                            </div>
+                            <button class="likeHeart" onclick="pushHeart()" ></button>
+                            <button class="removeComment" onclick="removeComm()" ></button>
+                        </div>
+                        <time class="before">1일전</time>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main_container">
+    <div class ="middle_Top">
+        <ul>
+            <li>
+                <a href="#"><img class="my_photo" src="img/my_photo.jpg" alt="my_photo"></a>
+            </li>
+        </ul>
+        <ul>
+            <li class="my_account">
+                <a href="#" type="text">hahaha</a>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="#"><img class="dot" src="img/dot.png" alt="dot"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="middle_Box">
+        <img class = "photo" src="img/photo.jpg" alt="photo">
+    </div>
+    <div class="middle_review">
+        <div class = "review_icon">
+            <ul class="fixedclear"> <!--좋아요 부분이 아이콘 밑으로 내려가면 clear both를 주어야한다-->
+                <button class="heartBtn" onclick="addLike()"><i class=" xi-heart-o xi-2x"></i>
+                </button>
+                <li>
+                    <button class="spBubble"><i class="xi-speech-o xi-2x"></i></button>
+                </li>
+                <li>
+                    <button class="send"><i class="xi-location-arrow xi-2x"></i></button>
+                </li>
+                <li>
+                    <button class="bookmark"><i class="xi-bookmark-o xi-2x"></i></button>
+                </li>
+            </ul>
+        </div>
+        <div class="comment_part">
+            <ul>
+                <li class="like_count" onchange="countPlus()">
+                    좋아요 1324개
+                </li>
+            </ul>
+            <div>
+                <ul>
+                    <li class="li">
+                        <div>
+                            <div class="comment">
+                                <span class="user">heewo</span>
+                                <span class="userComment">멋지네!!</span>
+
+                            </div>
+                            <button class="likeHeart" onclick="pushHeart()" ></button>
+                            <button class="removeComment" onclick="removeComm()" ></button>
+                        </div>
+                        <time class="before">1일전</time>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>
