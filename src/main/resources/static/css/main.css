@@ -14,6 +14,7 @@ body {
     width: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 header{
     background-color: white;
     width: 100%;
@@ -42,11 +43,13 @@ header{
 .other_logo .icon li{
     float: left;
 }
-
+.main_container {
+    width: 600px; /* Set your desired width */
+    margin: 10px auto; /* This will center the div horizontally */
+}
 .main_container .middle_Top{
     width: 600px;
     height: 55px;
-    margin: 1.5rem 20rem 0;
     background: white;
     border: 1px solid rgb(213, 213, 213);
     border-radius: 7px;
@@ -78,25 +81,23 @@ header{
 
 }
 .main_container .middle_Box{
-    width: 600px;
-    height: 600px;
-    margin: -0.5rem 10rem;
-    margin-left: 20rem;
+    display: flex;
     background: white;
     border: 1px solid rgb(213, 213, 213);
-    border-bottom: 0;
-    float: left;
-    border-radius: 1px;
+    align-items: center;
+    flex-direction: row;
+    height: 100%;
 }
 .middle_Box .photo{
-    width: 398px;
-    height: 400px;
+    max-width:100%;
+    width: 600px;
+    height: auto;
+    object-fit: cover;
 }
 .middle_review{
     width: 600px;
     height: auto;
-    margin: 24.5rem 10rem 0;
-    margin-left: 20rem;
+
     background: white;
     border: 0.5px solid rgb(213, 213, 213);
 }
@@ -213,4 +214,76 @@ float 속성 적용시 이후에 오는 다른 요소들까지같은 속성이 �
     content:"";
     display: block;
     clear: both;
+}
+
+/* Styling for the submenu */
+.submenu {
+    position: absolute;
+    display: none;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    z-index: 1;
+    margin-left: 500px; /* Add this line to position the submenu to the right */
+}
+
+/* Styling for the dots (optional) */
+.dot {
+    font-size: 24px;
+    color: #555;
+    cursor: pointer;
+}
+
+/* Show the submenu when hovering over the dot element */
+.dot:hover + .submenu {
+    display: block;
+}
+
+/* Style the submenu links */
+.submenu ul li {
+    list-style: none;
+}
+
+.submenu ul li a {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.submenu ul li a:hover {
+    background-color: #f9f9f9;
+}
+
+.btn {
+    display: inline-block;
+    position: absolute;
+    background-color: #cccccc;
+
+    padding: 10px;
+    color: #ffffff;
+}
+
+.prevBtn {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    color: #ffffff;
+    z-index: 1; /* Ensure buttons are on top of images */
+    cursor: pointer;
+}
+
+.nextBtn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    color: #ffffff;
+    z-index: 1; /* Ensure buttons are on top of images */
+    cursor: pointer;
 }

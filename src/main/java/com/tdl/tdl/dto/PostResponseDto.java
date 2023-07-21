@@ -11,6 +11,7 @@ import java.util.List;
 
 @Getter
 public class PostResponseDto {
+    private String userImage;
     private String profilename;
     private String content;
     private int likesCount;
@@ -19,6 +20,7 @@ public class PostResponseDto {
     private List<CommentResponseDto> commentList  = new ArrayList<>();
 
     public PostResponseDto(Post post) {
+        this.userImage = post.getUser().getUserImage();
         this.profilename = post.getUser().getProfilename();
         this.content = post.getContent();
         this.likesCount = post.getLikesCount();

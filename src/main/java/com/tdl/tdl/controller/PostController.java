@@ -7,12 +7,14 @@ import com.tdl.tdl.security.UserDetailsImpl;
 import com.tdl.tdl.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/tdl/post")
 @RequiredArgsConstructor
 public class PostController {
@@ -21,12 +23,15 @@ public class PostController {
 
     // 게시물 조회
     @GetMapping("")
-    public List<PostResponseDto> getPosts(){
-        return postService.getPosts();
+    public String getPosts(Model model){
+        List<PostResponseDto> post = postService.getPosts();
+        model.addAttribute("postList", post);
+        return "main";
     }
 
     // 게시물 등록
     @PostMapping("")
+    @ResponseBody
     public PostResponseDto createPost (@RequestPart("contents") PostRequestDto requestDto,
                                        @RequestPart("fileName") List<MultipartFile> multipartFiles,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
@@ -38,12 +43,14 @@ public class PostController {
 
     // 게시물 선택 조회
     @GetMapping("/{id}")
+    @ResponseBody
     public PostResponseDto getSelectPost(@PathVariable Long id){
         return postService.getSelectPost(id);
     }
 
     // 게시물 수정
     @PatchMapping("/{id}")
+    @ResponseBody
     public PostResponseDto updatePost (
             @PathVariable Long id, @RequestPart("content") PostRequestDto requestDto,
             @RequestPart("imgUrl") List<MultipartFile> multipartFiles, @AuthenticationPrincipal UserDetailsImpl userDetails)
@@ -53,6 +60,7 @@ public class PostController {
 
     // 게시물 삭제
     @DeleteMapping("/{id}")
+    @ResponseBody
     public String deletePost(
             @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
@@ -61,12 +69,14 @@ public class PostController {
 
     // 게시물 좋아요
     @PostMapping("/like/{id}")
+    @ResponseBody
     public String likePost (@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.likePost(id, userDetails.getUser());
     }
 
     // 게시물 좋아요 취소
     @DeleteMapping("/like/{id}")
+    @ResponseBody
     public String deleteLikePost (@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.deleteLikePost(id, userDetails.getUser());
     }
