@@ -13,4 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByUsernameContaining(String keyword);
     Optional<User> findByKakaoId(Long kakaoId);
     List<User> findAllByOrderByFollowersCountDesc();
+
 }

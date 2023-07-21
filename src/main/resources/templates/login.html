@@ -24,12 +24,13 @@
         <input type="text" name="username" id="username" placeholder="Email" class="login-input-box">
         <div class="login-id-label">비밀번호</div>
         <input type="password" name="password" id="password" placeholder="Password" class="login-input-box">
-        <button id="signup-btn" onclick="location.href='/tdl/user/signup'">
+        <button id="signup-btn" onclick="location.href='/tdl/view/user/signup'">
             회원가입 하시겠습니까?
         </button>
         <button id="login-id-submit" class="confirm-btn" onclick="onLogin()">로그인</button>
         <p class="or-label">또는</p>
-        <button id="login-kakao-btn" class="confirm-btn" onclick="onLogin()">카카오 로그인</button>
+        <button id="login-kakao-btn" class="confirm-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=7d8a8b5c3e1a8e520c85fa9213f0537c&redirect_uri=http://localhost:8080/tdl/user/login&response_type=code'">
+            카카오 로그인</button>
     </div>
     <div id="login-failed" style="display: none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
 </div>
