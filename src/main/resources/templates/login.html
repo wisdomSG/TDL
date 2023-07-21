@@ -59,7 +59,7 @@
                     jqXHR.setRequestHeader('Authorization', token);
                 });
                 alert("로그인 성공 !")
-                window.location.href = host;
+                window.location.href = host + '/tdl/post';
             })
             .fail(function (xhr, textStatus, errorThrown) {
                 alert("로그읜 실패 !")
@@ -67,5 +67,7 @@
                 window.location.href = host + '/tdl/view/user/login'
             });
     }
+
+
 </script>
 </html>
