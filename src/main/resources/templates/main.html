@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>main_page</title>
+    <link rel = "stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+</head>
+<body>
+<header class="logo fixedclear">
+    <a href="main.html"><img class = "brand_logo" src="img/brand_logo.png" alt="logo"></a>
+    <div class = "other_logo">
+        <ul class="icon">
+            <li>
+                <a href="main.html"><img class = "home" src="img/home.png" alt="logo"></a>
+            </li>
+            <li>
+                <a href="#"><img class = "plus" src="img/plus.png" alt="plus"></a>
+            </li>
+            <li>
+                <a href="#"><img class = "heart" src="img/heart.png" alt="heart"></a>
+            </li>
+            <li>
+                <a href="#"><img class="my_account" src="img/my_photo.jpg" alt="my_account"></a>
+            </li>
+        </ul>
+    </div>
+</header>
+<div class="main_container" th:each="post : ${postList}">
+    <div class ="middle_Top">
+        <ul>
+            <li>
+                <a href="#"><img class="my_photo" th:src="${post.getUserImage()}" alt="my_photo"></a>
+            </li>
+        </ul>
+        <ul>
+            <li class="my_account">
+                <a href="#" type="text" th:text="${post.getProfilename()}"></a>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="#"><img class="dot" src="img/dot.png" alt="dot"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="slide" style="width: 600px; height: 600px; overflow: hidden; position: relative;">
+        <div class="middle_Box">
+            <img th:each="postImage : ${post.getPostImageList()}" class = "photo" th:src="|https://sparta-tdl-bucket.s3.ap-northeast-2.amazonaws.com/${postImage.getFileName()}|" alt="photo">
+        </div>
+        <a class="btn prevBtn">Prev</a>
+        <a class="btn nextBtn">Next</a>
+    </div>
+
+    <div class="middle_review">
+        <div class = "review_icon">
+            <ul class="fixedclear"> <!--좋아요 부분이 아이콘 밑으로 내려가면 clear both를 주어야한다-->
+                <button class="heartBtn" onclick="addLike()"><i class=" xi-heart-o xi-2x"></i>
+                </button>
+                <li>
+                    <button class="spBubble"><i class="xi-speech-o xi-2x"></i></button>
+                </li>
+                <li>
+                    <button class="send"><i class="xi-location-arrow xi-2x"></i></button>
+                </li>
+                <li>
+                    <button class="bookmark"><i class="xi-bookmark-o xi-2x"></i></button>
+                </li>
+            </ul>
+        </div>
+        <div class="comment_part">
+            <ul>
+                <li class="like_count" onchange="countPlus()" th:text="|좋아요 ${post.getLikesCount()} 개|">
+                </li>
+            </ul>
+            <div>
+                <ul>
+                    <li class="li">
+                        <div>
+                            <div class="comment">
+                                <span class="user" th:text="${post.getProfilename()}"></span>
+                                <span class="userComment" th:text="${post.getContent()}"></span>
+
+                            </div>
+                            <button class="likeHeart" onclick="pushHeart()" ></button>
+                            <button class="removeComment" onclick="removeComm()" ></button>
+                        </div>
+                        <time class="before" th:text="${post.getCreatedAt()}"></time>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/main.js"></script>
+<script>
+    document.addEventListener("click", function (event) {
+        const submenu = document.querySelector(".submenu");
+        const dot = document.querySelector(".dot");
+        if (event.target === dot) {
+            // If the "dot" element is clicked, toggle the display of the submenu
+            submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+        } else if (!submenu.contains(event.target)) {
+            // If a click happens outside the "dot" element and the submenu, hide the submenu
+            submenu.style.display = "none";
+        }
+    });
+
+    // 각 슬라이드 컨테이너를 가져옵니다.
+    const slideContainers = document.querySelectorAll('.slide');
+
+    // Prev와 Next 버튼에 대한 이벤트를 추가합니다.
+    slideContainers.forEach((container) => {
+        console.log("이벤트 추가");
+        const middleBox = container.querySelector('.middle_Box');
+        const prevBtn = container.querySelector('.prevBtn');
+        const nextBtn = container.querySelector('.nextBtn');
+        let currentIndex = 0; // 현재 보이는 이미지의 인덱스를 추적합니다.
+
+        // 초기에 prevBtn 비활성화
+        prevBtn.disabled = true;
+
+        prevBtn.addEventListener('click', () => {
+            // 이전 이미지로 이동합니다.
+            console.log("이전이미지");
+            currentIndex = (currentIndex - 1 + middleBox.childElementCount) % middleBox.childElementCount;
+            updateSlide();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            // 다음 이미지로 이동합니다.
+            console.log("다음이미지");
+            currentIndex = (currentIndex + 1) % middleBox.childElementCount;
+            updateSlide();
+        });
+
+        // 현재 보이는 이미지를 갱신하는 함수입니다.
+        function updateSlide() {
+            const slideWidth = container.clientWidth;
+            const slideDistance = -currentIndex * slideWidth;
+            middleBox.style.transform = `translateX(${slideDistance}px)`;
+
+            // 추가: 현재 인덱스가 0보다 크거나 같으면 prevBtn 활성화
+            if (currentIndex <= 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+
+            // 추가: 현재 인덱스가 마지막 이미지의 인덱스보다 작으면 nextBtn 활성화
+            if (currentIndex >= middleBox.childElementCount - 1) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+        }
+
+    });
+</script>
+</body>
+</html>

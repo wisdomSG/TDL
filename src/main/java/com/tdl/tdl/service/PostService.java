@@ -38,13 +38,14 @@ public class PostService {
 
         Post post = postRepository.save(new Post(requestDto, imgPaths, user));
         postRepository.save(post);
-/*
+
         List<String> imgList = new ArrayList<>();
         for (String imgUrl : imgPaths) {
             PostImage img = new PostImage(imgUrl, post);
             postImageRepository.save(img);
             imgList.add(img.getFileName());
-        }*/
+        }
+
         return new PostResponseDto(post);
     }
 
