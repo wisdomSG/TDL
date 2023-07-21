@@ -48,7 +48,6 @@ public class User extends Timestamped{
 
 
     @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
-
     private List<Post> postList = new ArrayList<>();
 
     @ColumnDefault("0")
@@ -63,9 +62,6 @@ public class User extends Timestamped{
     @Enumerated(value = EnumType.STRING) // enum 타입을 데이터베이스에 저장할때 사용하는 애너테이션
     private UserRoleEnum role;
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Post> post = new ArrayList<>();
 
     private Long kakaoId;
 

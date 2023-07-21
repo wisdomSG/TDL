@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tdl")
+@RequestMapping("/tdl/user")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -29,14 +29,14 @@ public class UserController {
     private final KakaoService kakaoService;
 
     // 회원가입 기능
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public ResponseEntity<String> Signup(@Valid @RequestBody SignupRequestDto dto) {
         userService.signup(dto);
         return ResponseEntity.ok().body("회원가입 성공");
     }
 
     // 로그인 기능
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public TokenDto Login(@RequestBody UserRequestDto dto, HttpServletResponse response) {
         return userService.login(dto, response);
 
@@ -53,12 +53,13 @@ public class UserController {
         }
     }
     // 유저 검색 기능
-    @GetMapping("/user/search")
+    @GetMapping("/search")
     public UserSearchResponseDto SearchUser(@RequestParam("keyword") UserSearchRequestDto dto) {
         return userService.searchUser(dto);
     }
 
-    @GetMapping("/user/login")
+    // 카카오 로그인 기능
+    @GetMapping("/login")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);
 
