@@ -7,6 +7,8 @@
     <title>main_page</title>
     <link rel = "stylesheet" href="/css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 </head>
 <body>
 <script>
@@ -15,7 +17,7 @@
     });
 </script>
 <header class="logo fixedclear">
-    <a href="main.html"><img class = "brand_logo" src="/css/image.png" alt="logo"></a>
+    <a href="/tdl/post"><img class = "brand_logo" src="/css/image.png" alt="logo"></a>
     <div class = "other_logo">
         <ul class="icon">
 <!--            <li>-->
@@ -200,13 +202,49 @@
         return auth;
     }
 
-    function getCookie(name) {
-        const value = "; " + document.cookie;
-        const parts = value.split("; " + name + "=");
-        if (parts.length === 2) {
-            return parts.pop().split(";").shift();
+    function getCookie(cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookieArray = decodedCookie.split(';');
+        for (var i = 0; i < cookieArray.length; i++) {
+            var cookie = cookieArray[i];
+            while (cookie.charAt(0) == ' ') {
+                cookie = cookie.substring(1);
+            }
+            if (cookie.indexOf(name) == 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
         }
+        return "";
     }
+
+    //로그아웃
+    function logout() {
+        let authCookie = getCookie('Authorization');
+        console.log(authCookie);
+        $.ajax({
+            url: 'http://localhost:8080/tdl/user/logout',
+            type: 'POST',
+            headers: {
+                'Authorization': authCookie
+            },
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                Cookies.remove('Authorization', {path: '/'}); // 쿠키삭제
+                // 요청 성공 시 처리할 로직
+                alert("로그아웃 성공 !");
+
+                window.location.reload();
+
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr);
+                alert("로그아웃 실패 !");
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
