@@ -1,18 +1,14 @@
 package com.tdl.tdl.service;
 
-import com.tdl.tdl.dto.AdminPostResponseDto;
-import com.tdl.tdl.dto.AdminUserResponseDto;
-import com.tdl.tdl.entity.Post;
-import com.tdl.tdl.entity.User;
-import com.tdl.tdl.entity.UserRoleEnum;
-import com.tdl.tdl.repository.PostImageRepository;
-import com.tdl.tdl.repository.PostRepository;
-import com.tdl.tdl.repository.UserRepository;
+import com.tdl.tdl.dto.*;
+import com.tdl.tdl.entity.*;
+import com.tdl.tdl.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +22,9 @@ public class AdminService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final PostImageRepository postImageRepository;
+    private final TotalPostRepository totalPostRepository;
+    private final TotalUserRepository totalUserRepository;
+    private final DayOfTheWeekPostRepository dayOfTheWeekPostRepository;
 
 
     public Page<Post> getPost(int page, User user) { // post목록
@@ -103,5 +101,103 @@ public class AdminService {
         Sort sort = Sort.by(direction,"postId");
         Pageable pageable = PageRequest.of(page,4,sort);
         return postRepository.findByContentContaining(info,pageable);
+    }
+
+    public List<AdminTotalUserResponse> getTotalUser() {
+        if (totalUserRepository.findAll().size() < 2 ){
+            List<AdminTotalUserResponse> totalUserResponse = new ArrayList<>();
+            List<TotalUser> totalUser  = totalUserRepository.findAll();
+            for (TotalUser user : totalUser) {
+                totalUserResponse.add(new AdminTotalUserResponse(user.getTotalUsers()));
+            }
+            return totalUserResponse;
+        } else {
+            List<AdminTotalUserResponse> totalUserResponses = new ArrayList<>(); // 제일 최신 토탈유저데이터가 리스트에 맨앞으로 들어감
+            List<TotalUser> totalUser = totalUserRepository.findAllByOrderByCreatedAtDesc();
+            for (int i = 0; i < 2; i++) {
+                totalUserResponses.add(new AdminTotalUserResponse(totalUser.get(i).getTotalUsers()));
+            }
+            return totalUserResponses;
+        }
+    }
+
+
+    public List<AdminTotalPostResponse> getTotalPost() {
+        if (totalPostRepository.findAll().size() < 2 ){
+            List<AdminTotalPostResponse> totalPostResponse = new ArrayList<>();
+            List<TotalPost> totalPost  = totalPostRepository.findAll();
+            for (TotalPost Post : totalPost) {
+                totalPostResponse.add(new AdminTotalPostResponse(Post.getTotalPosts()));
+            }
+            return totalPostResponse;
+        } else {
+            List<AdminTotalPostResponse> totalPostResponses = new ArrayList<>(); // 제일 최신 토탈유저데이터가 리스트에 맨앞으로 들어감
+            List<TotalPost> totalPost = totalPostRepository.findAllByOrderByCreatedAtDesc();
+            for (int i = 0; i < 2; i++) {
+                totalPostResponses.add(new AdminTotalPostResponse(totalPost.get(i).getTotalPosts()));
+            }
+            return totalPostResponses;
+        }
+
+    }
+
+    public List<AdminDayOfTheWeekResponse> getDayOfTheWeek() {
+        if (dayOfTheWeekPostRepository.findAll().size() < 2 ){
+            List<AdminDayOfTheWeekResponse> dayOfTheWeekResponse = new ArrayList<>();
+            List<DayOfTheWeekPost> dayOfTheWeekPost  = dayOfTheWeekPostRepository.findAll();
+            for (DayOfTheWeekPost DayOfWeek : dayOfTheWeekPost) {
+                dayOfTheWeekResponse.add(new AdminDayOfTheWeekResponse(DayOfWeek));
+            }
+            return dayOfTheWeekResponse;
+        } else {
+            List<AdminDayOfTheWeekResponse> dayOfTheWeekResponses = new ArrayList<>(); // 제일 최신 토탈유저데이터가 리스트에 맨앞으로 들어감
+            List<DayOfTheWeekPost> totalPost = dayOfTheWeekPostRepository.findAllByOrderByCreatedAtDesc();
+            for (int i = 0; i < 2; i++) {
+                dayOfTheWeekResponses.add(new AdminDayOfTheWeekResponse(totalPost.get(i)));
+            }
+            return dayOfTheWeekResponses;
+        }
+    }
+
+    public List<AdminPostResponseDto> getTopThreeLike() {
+        if (postRepository.findAllByOrderByLikesCountDesc().size() < 3  ) {
+            List<AdminPostResponseDto> postResponseDto = new ArrayList<>();
+            List<Post> posts = postRepository.findAllByOrderByLikesCountDesc();
+            for (Post post : posts) {
+                postResponseDto.add(new AdminPostResponseDto(post));
+            }
+            return postResponseDto;
+        } else {
+            List<AdminPostResponseDto> postResponses = new ArrayList<>();
+            List<Post> posts = postRepository.findAllByOrderByLikesCountDesc();
+            for (int i = 0; i < 3; i++) {
+                postResponses.add(new AdminPostResponseDto(posts.get(i)));
+            }
+            return postResponses;
+        }
+    }
+
+    public List<AdminUserResponseDto> getTopThreeFollowCount() {
+        if (userRepository.findAllByOrderByFollowersCountDesc().size() < 3  ) {
+            List<AdminUserResponseDto> userResponseDto = new ArrayList<>();
+            List<User> users = userRepository.findAllByOrderByFollowersCountDesc();
+            for (User user : users) {
+                userResponseDto.add(new AdminUserResponseDto(user));
+            }
+            return userResponseDto;
+        } else {
+            List<AdminUserResponseDto> userResponseDtos = new ArrayList<>();
+            List<User> users = userRepository.findAllByOrderByFollowersCountDesc();
+            for (int i = 0; i < 3; i++) {
+                userResponseDtos.add(new AdminUserResponseDto(users.get(i)));
+            }
+            return userResponseDtos;
+        }
+    }
+
+
+    public AdminUserResponseDto getAdminUserInfo(User user) {
+        confirmAdminToken(user);
+        return new AdminUserResponseDto(user);
     }
 }
