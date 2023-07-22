@@ -46,7 +46,7 @@
             </li>
         </ul>
     </div>
-    <div class="slide" style="width: 600px; height: 600px; overflow: hidden; position: relative;">
+    <div class="slide" style="width: 600px; height: 600px; overflow: hidden; position: relative; border: 1px solid rgb(213, 213, 213);">
         <div class="middle_Box">
             <img th:each="postImage : ${post.getPostImageList()}" class = "photo" th:src="|https://sparta-tdl-bucket.s3.ap-northeast-2.amazonaws.com/${postImage.getFileName()}|" alt="photo">
         </div>
