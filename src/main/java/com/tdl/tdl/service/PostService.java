@@ -32,7 +32,10 @@ public class PostService {
 
     // 게시물 등록
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, List<MultipartFile> multipartFiles, User user) {
+    public PostResponseDto createPost(PostRequestDto requestDto, List<MultipartFile> multipartFiles, User user) throws Exception {
+        if (multipartFiles == null) {
+            throw new Exception("파일 업로드 필수");
+        }
         // Aws에 이미지 저장
         List<String> imgPaths = awsS3Service.uploadFile(multipartFiles);
 

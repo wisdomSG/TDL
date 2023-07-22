@@ -7,6 +7,7 @@
     <title>main_page</title>
     <link rel = "stylesheet" href="/css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 </head>
@@ -27,6 +28,9 @@
                 <a href="/tdl/post"><img class = "plus" src="/css/home.png" alt="plus"></a>
             </li>
             <li>
+                <a id="addPost" onclick="goAddPost()"><img class = "plus" src="/images/addPost.png" alt="plus"></a>
+            </li>
+            <li>
                 <a id="signup-text" href="/tdl/view/user/signup"><img class = "heart" src="/css/signup.png" alt="heart"   ></a>
                 <a id="mypage-text" href="/tdl/user/profile"><img class = "heart" src="/css/profile.png" alt="heart" ></a>
             </li>
@@ -38,6 +42,7 @@
     </div>
 </header>
 <div class="main_container" th:each="post : ${postList}">
+    <input type="hidden" th:id="'post'+${post.getPostId()}">
     <div class ="middle_Top">
         <ul>
             <li>
@@ -50,7 +55,7 @@
             </li>
         </ul>
         <ul>
-            <li>
+            <li th:if="${post.getProfilename()}">
                 <a href="#"><img class="dot" src="img/dot.png" alt="dot"></a>
             </li>
         </ul>
@@ -64,18 +69,12 @@
     </div>
 
     <div class="middle_review">
-        <div class = "review_icon">
+        <div class="review_icon">
             <ul class="fixedclear"> <!--좋아요 부분이 아이콘 밑으로 내려가면 clear both를 주어야한다-->
                 <button class="heartBtn" onclick="addLike()"><i class=" xi-heart-o xi-2x"></i>
                 </button>
                 <li>
-                    <button class="spBubble"><i class="xi-speech-o xi-2x"></i></button>
-                </li>
-                <li>
-                    <button class="send"><i class="xi-location-arrow xi-2x"></i></button>
-                </li>
-                <li>
-                    <button class="bookmark"><i class="xi-bookmark-o xi-2x"></i></button>
+                    <button class="spBubble" th:onclick="'getPostDetail('+${post.getPostId()}+')'"><i class="xi-speech-o xi-2x"></i></button>
                 </li>
             </ul>
         </div>
@@ -91,10 +90,7 @@
                             <div class="comment">
                                 <span class="user" th:text="${post.getProfilename()}"></span>
                                 <span class="userComment" th:text="${post.getContent()}"></span>
-
                             </div>
-                            <button class="likeHeart" onclick="pushHeart()" ></button>
-                            <button class="removeComment" onclick="removeComm()" ></button>
                         </div>
                         <time class="before" th:text="${post.getCreatedAt()}"></time>
                     </li>
@@ -103,7 +99,6 @@
         </div>
     </div>
 </div>
-<script src="js/main.js"></script>
 <script>
     document.addEventListener("click", function (event) {
         const submenu = document.querySelector(".submenu");
@@ -245,6 +240,31 @@
         });
     }
 
+    function getPostDetail(postId) {
+        const auth = getToken();
+        $.ajax({
+            type: "GET",
+            url:"/tdl/post/"+postId,
+            contentType:"application/json",
+            data:{Authorization: auth},
+            success:function (response){
+                window.location.href = "/tdl/post/"+postId;
+            }
+        })
+    }
+
+    function goAddPost() {
+        const auth = getToken();
+        $.ajax({
+            type: "GET",
+            url:"/tdl/post/add",
+            contentType:"application/json",
+            data:{Authorization: auth},
+            success:function (response){
+                window.location.href = "/tdl/post/add";
+            }
+        })
+    }
 </script>
 </body>
 </html>

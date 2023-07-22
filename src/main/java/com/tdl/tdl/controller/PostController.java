@@ -4,9 +4,12 @@ package com.tdl.tdl.controller;
 import com.tdl.tdl.dto.PostRequestDto;
 import com.tdl.tdl.dto.PostResponseDto;
 import com.tdl.tdl.entity.Post;
+import com.tdl.tdl.entity.User;
 import com.tdl.tdl.security.UserDetailsImpl;
 import com.tdl.tdl.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +21,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/tdl/post")
 @RequiredArgsConstructor
+@Slf4j(topic = "Post")
 public class PostController {
 
     private final PostService postService;
@@ -30,16 +34,21 @@ public class PostController {
         return "main";
     }
 
+    @GetMapping("/add")
+    public String addPost(){
+        return "addPost";
+    }
     // 게시물 등록
-    @PostMapping("")
-    @ResponseBody
-    public PostResponseDto createPost (@RequestPart("contents") PostRequestDto requestDto,
-                                       @RequestPart("fileName") List<MultipartFile> multipartFiles,
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String createPost (@ModelAttribute PostRequestDto requestDto,
+
                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-        if (multipartFiles == null) {
-            throw new Exception("파일 업로드 필수");
+        log.info(requestDto.getContents());
+        for(int i=0; i<requestDto.getMultipartFiles().size(); i++) {
+            log.info(String.valueOf(requestDto.getMultipartFiles().get(i)));
         }
-        return postService.createPost(requestDto, multipartFiles, userDetails.getUser());
+        postService.createPost(requestDto, requestDto.getMultipartFiles(), userDetails.getUser());
+        return "main";
     }
 
     // 게시물 선택 조회
