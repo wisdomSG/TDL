@@ -6,24 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>main_page</title>
     <link rel = "stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 </head>
 <body>
+<script>
+    $(document).ready(function () {
+        start(); // start 함수를 호출합니다.
+    });
+</script>
 <header class="logo fixedclear">
-    <a href="main.html"><img class = "brand_logo" src="img/brand_logo.png" alt="logo"></a>
+    <a href="/tdl/post"><img class = "brand_logo" src="/css/image.png" alt="logo"></a>
     <div class = "other_logo">
         <ul class="icon">
+<!--            <li>-->
+<!--                <a href="main.html"><img class = "home" src="img/home.png" alt="logo"></a>-->
+<!--            </li>-->
             <li>
-                <a href="main.html"><img class = "home" src="img/home.png" alt="logo"></a>
+                <a href="/tdl/post"><img class = "plus" src="/css/home.png" alt="plus"></a>
             </li>
             <li>
-                <a href="#"><img class = "plus" src="img/plus.png" alt="plus"></a>
+                <a id="signup-text" href="/tdl/view/user/signup"><img class = "heart" src="/css/signup.png" alt="heart"   ></a>
+                <a id="mypage-text" href="/tdl/user/profile"><img class = "heart" src="/css/profile.png" alt="heart" ></a>
             </li>
             <li>
-                <a href="#"><img class = "heart" src="img/heart.png" alt="heart"></a>
-            </li>
-            <li>
-                <a href="#"><img class="my_account" src="img/my_photo.jpg" alt="my_account"></a>
+                <a id="login-text" href="/tdl/view/user/login"><img class="my_account" src="/css/login.png" alt="my_account" ></a>
+                <a id="logout-text" href="javascript:logout()"><img class="my_account" src="/css/logout.png" alt="my_account" ></a>
             </li>
         </ul>
     </div>
@@ -158,6 +167,84 @@
         }
 
     });
+
+
+    // 페이지가 로드될 때 start 함수를 호출합니다.
+    document.addEventListener("DOMContentLoaded", function () {
+        start();
+    });
+
+    function start() {
+        const auth = getToken();
+        console.log("auth=", auth);
+        if (auth === '') {
+            document.getElementById('login-text').style.display = 'block';
+            document.getElementById('signup-text').style.display = 'block';
+            document.getElementById('logout-text').style.display = 'none';
+            document.getElementById('mypage-text').style.display = 'none';
+        } else {
+            document.getElementById('login-text').style.display = 'none';
+            document.getElementById('signup-text').style.display = 'none';
+            document.getElementById('logout-text').style.display = 'block';
+            document.getElementById('mypage-text').style.display = 'block';
+            const postBoxes = document.getElementsByClassName('postbox');
+            for (let i = 0; i < postBoxes.length; i++) {
+                postBoxes[i].style.display = 'block';
+            }
+        }
+    }
+
+    function getToken() {
+        let auth = getCookie('Authorization');
+        if (auth === undefined || auth == null) {
+            return '';
+        }
+        return auth;
+    }
+
+    function getCookie(cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookieArray = decodedCookie.split(';');
+        for (var i = 0; i < cookieArray.length; i++) {
+            var cookie = cookieArray[i];
+            while (cookie.charAt(0) == ' ') {
+                cookie = cookie.substring(1);
+            }
+            if (cookie.indexOf(name) == 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return "";
+    }
+
+    //로그아웃
+    function logout() {
+        let authCookie = getCookie('Authorization');
+        console.log(authCookie);
+        $.ajax({
+            url: 'http://localhost:8080/tdl/user/logout',
+            type: 'POST',
+            headers: {
+                'Authorization': authCookie
+            },
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                Cookies.remove('Authorization', {path: '/'}); // 쿠키삭제
+                // 요청 성공 시 처리할 로직
+                alert("로그아웃 성공 !");
+
+                window.location.reload();
+
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr);
+                alert("로그아웃 실패 !");
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
