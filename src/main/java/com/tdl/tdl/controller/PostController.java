@@ -3,6 +3,7 @@ package com.tdl.tdl.controller;
 
 import com.tdl.tdl.dto.PostRequestDto;
 import com.tdl.tdl.dto.PostResponseDto;
+import com.tdl.tdl.entity.Post;
 import com.tdl.tdl.security.UserDetailsImpl;
 import com.tdl.tdl.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +44,10 @@ public class PostController {
 
     // 게시물 선택 조회
     @GetMapping("/{id}")
-    @ResponseBody
-    public PostResponseDto getSelectPost(@PathVariable Long id){
-        return postService.getSelectPost(id);
+    public String getSelectPost(@PathVariable Long id, Model model){
+        PostResponseDto post = postService.getSelectPost(id);
+        model.addAttribute("post", post);
+        return "postDetail";
     }
 
     // 게시물 수정

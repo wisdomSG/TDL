@@ -52,7 +52,7 @@ public class PostService {
     // 게시물 선택 조회
     public PostResponseDto getSelectPost(Long id) {
         Post post = findPost(id);
-        return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
+        return new PostResponseDto(post);
     }
 
     // 게시물 수정
