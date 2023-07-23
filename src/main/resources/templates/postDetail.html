@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>main_page</title>
     <link rel="stylesheet" href="/css/main.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+    <script src="/js/token.js"></script>
     <style>
         .comment-form {
             display: flex;
@@ -39,25 +41,31 @@
 
 <body>
 <header class="logo fixedclear">
-    <a href="main.html"><img class="brand_logo" src="img/brand_logo.png" alt="logo"></a>
-    <div class="other_logo">
+    <a href="/tdl/post"><img class = "brand_logo" src="/css/image.png" alt="logo"></a>
+    <div class = "other_logo">
         <ul class="icon">
+            <!--            <li>-->
+            <!--                <a href="main.html"><img class = "home" src="img/home.png" alt="logo"></a>-->
+            <!--            </li>-->
             <li>
-                <a href="main.html"><img class="home" src="img/home.png" alt="logo"></a>
+                <a href="/tdl/post"><img class = "plus" src="/css/home.png" alt="plus"></a>
             </li>
             <li>
-                <a href="#"><img class="plus" src="img/plus.png" alt="plus"></a>
+                <a id="addPost" onclick="goAddPost()"><img class = "plus" src="/images/addPost.png" alt="plus"></a>
             </li>
             <li>
-                <a href="#"><img class="heart" src="img/heart.png" alt="heart"></a>
+                <a id="signup-text" href="/tdl/view/user/signup"><img class = "heart" src="/css/signup.png" alt="heart"   ></a>
+                <a id="mypage-text" href="/tdl/user/profile"><img class = "heart" src="/css/profile.png" alt="heart" ></a>
             </li>
             <li>
-                <a href="#"><img class="my_account" src="img/my_photo.jpg" alt="my_account"></a>
+                <a id="login-text" href="/tdl/view/user/login"><img class="my_account" src="/css/login.png" alt="my_account" ></a>
+                <a id="logout-text" href="javascript:logout()"><img class="my_account" src="/css/logout.png" alt="my_account" ></a>
             </li>
         </ul>
     </div>
 </header>
 <div class="main_container">
+    <input type="hidden" id="postIdValue" th:value="${post.getPostId()}">
     <div class="middle_Top">
         <ul>
             <li>
@@ -123,12 +131,15 @@
                         <span class="user" th:text="${comment.getProfileName()}">사용자</span>
                         <span class="userComment" th:text="${comment.getContent()}"></span>
                     </div>
-                    <div th:if="${session.user != null}">
-                        <button>수정</button>
-                        <button>삭제</button>
-                    </div>
-                    <button class="likeHeart" onclick="pushHeart()"></button>
-                    <button class="removeComment" onclick="removeComm()"></button>
+                    <button class="likeHeart" onclick="removeComm()">
+                        <img src="/images/x.png" alt="tkrwp" style="width: 20px; height: 20px;">
+                    </button>
+                    <button class="likeHeart" onclick="modifyComm()">
+                        <img src="/images/comment.jpg" alt="tnwjd" style="width: 20px; height: 20px;">
+                    </button>
+                    <button class="likeHeart" onclick="pushHeart()" >
+                        <img src="/images/like.jpg" alt="좋아요" style="width: 20px; height: 20px;">
+                    </button>
                 </li>
             </ul>
             <!-- 댓글 입력창과 버튼 -->
@@ -208,30 +219,38 @@
     function addComment() {
         // 댓글 입력창의 내용을 가져옵니다.
         const commentInput = document.querySelector('.comment-input');
-        const commentText = commentInput.value.trim();
+        const content = commentInput.value.trim();
 
-        if (commentText === '') {
+        if (content === '') {
             alert('댓글을 입력해주세요.');
             return;
         }
 
-        // 댓글 목록에 새로운 댓글을 추가합니다.
-        const commentList = document.querySelector('.comment-list');
-        const newComment = document.createElement('li');
-        newComment.innerHTML = `
-            <div class="comment">
-                <span class="user_img"></span>
-                <span class="user">사용자</span>
-                <span class="userComment">${commentText}</span>
-            </div>
-            <button class="likeHeart" onclick="pushHeart()"></button>
-            <button class="removeComment" onclick="removeComm()"></button>
-        `;
+        const commentRequest = {
+            content: content
+        };
 
-        commentList.appendChild(newComment);
+        const postId = document.getElementById('postIdValue').value;
+        const auth = getToken();
 
-        // 댓글 입력창 초기화
-        commentInput.value = '';
+        $.ajax({
+            type: "POST",
+            url: "/tdl/comment/"+postId,
+            contentType: "application/json",
+            data: JSON.stringify(commentRequest),
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', auth);
+            },
+            success: function (data) {
+                alert("성공");
+                console.log(data);
+                window.location.href = '/tdl/post/'+postId;
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("업로드 실패 또는 오류 발생");
+            }
+        })
     }
 </script>
 </body>

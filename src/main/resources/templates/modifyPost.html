@@ -258,11 +258,9 @@
     }
 
     function updateData() {
-        alert("들어오긴했니?")
         const postId = document.getElementById('hiddenInput').value;
         const contents = document.querySelector('.image_upload_textarea').value;
         const token = getToken();
-        alert(token);
         const formData = new FormData();
         const inputFiles = document.getElementById('multipartFiles').files;
 
@@ -271,8 +269,6 @@
         }
 
         formData.append('contents', contents);
-        alert(formData.getAll('contents'));
-        alert(formData.getAll('multipartFiles'));
         $.ajax({
             url: "/tdl/post/" + postId,
             type: 'PATCH',
