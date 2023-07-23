@@ -61,12 +61,12 @@
     <div class="middle_Top">
         <ul>
             <li>
-                <a href="#"><img class="my_photo" th:src="${post.getUserImage()}" alt="my_photo"></a>
+                <a href="#"><img class="my_photo" th:src="${post.getUser().getUserImage()}" alt="my_photo"></a>
             </li>
         </ul>
         <ul>
             <li class="my_account">
-                <a href="#" type="text" th:text="${post.getProfilename()}">닉네임</a>
+                <a href="#" type="text" th:text="${post.getUser().getProfilename()}">닉네임</a>
             </li>
         </ul>
         <ul>
@@ -107,7 +107,7 @@
                     <li class="li" style="margin-bottom: 10px; height: auto;">
                         <div>
                             <div class="comment">
-                                <span class="user" th:text="${post.getProfilename()}">닉네임</span>
+                                <span class="user" th:text="${post.getUser().getProfilename()}">닉네임</span>
                                 <span class="userComment" th:text="${post.getContent()}">게시글 내용</span>
                             </div>
                         </div>

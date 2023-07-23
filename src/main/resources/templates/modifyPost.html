@@ -69,25 +69,28 @@
 
 <body>
 <header class="logo fixedclear">
-    <a href="/tdl/post"><img class = "brand_logo" src="/css/image.png" alt="logo"></a>
-    <div class = "other_logo">
+    <a href="/tdl/post"><img class="brand_logo" src="/css/image.png" alt="logo"></a>
+    <div class="other_logo">
         <ul class="icon">
             <!--            <li>-->
             <!--                <a href="main.html"><img class = "home" src="img/home.png" alt="logo"></a>-->
             <!--            </li>-->
             <li>
-                <a href="/tdl/post"><img class = "plus" src="/css/home.png" alt="plus"></a>
+                <a href="/tdl/post"><img class="plus" src="/css/home.png" alt="plus"></a>
             </li>
             <li>
-                <a id="addPost" onclick="goAddPost()"><img class = "plus" src="/images/addPost.png" alt="plus"></a>
+                <a id="addPost" onclick="goAddPost()"><img class="plus" src="/images/addPost.png" alt="plus"></a>
             </li>
             <li>
-                <a id="signup-text" href="/tdl/view/user/signup"><img class = "heart" src="/css/signup.png" alt="heart"   ></a>
-                <a id="mypage-text" href="/tdl/user/profile"><img class = "heart" src="/css/profile.png" alt="heart" ></a>
+                <a id="signup-text" href="/tdl/view/user/signup"><img class="heart" src="/css/signup.png"
+                                                                      alt="heart"></a>
+                <a id="mypage-text" href="/tdl/user/profile"><img class="heart" src="/css/profile.png" alt="heart"></a>
             </li>
             <li>
-                <a id="login-text" href="/tdl/view/user/login"><img class="my_account" src="/css/login.png" alt="my_account" ></a>
-                <a id="logout-text" href="javascript:logout()"><img class="my_account" src="/css/logout.png" alt="my_account" ></a>
+                <a id="login-text" href="/tdl/view/user/login"><img class="my_account" src="/css/login.png"
+                                                                    alt="my_account"></a>
+                <a id="logout-text" href="javascript:logout()"><img class="my_account" src="/css/logout.png"
+                                                                    alt="my_account"></a>
             </li>
         </ul>
     </div>
@@ -97,17 +100,21 @@
         <div class="bigbox">
             <!-- 섬네일은 아래 주소 참고 -->
             <!-- https://medium.com/@asadise/create-thumbnail-for-an-image-in-spring-framework-49776c873ea1 -->
-            <form class="upload__form" id="uploadForm" enctype="multipart/form-data" onsubmit="uploadData(); return false;">
+            <input type="hidden" id="hiddenInput" th:value="${post.getPostId()}">
+            <form class="upload__form" id="uploadForm" enctype="multipart/form-data" onsubmit="updateData(); return false;">
                 <table class="table">
                     <tr>
                         <td style="height: 500px;">
                             <div class="slide" style="width: 500px; height: 500px; overflow: hidden;">
                                 <div class="img_wrap" id="my_div">
-
+                                    <img th:each="postImg : ${post.getPostImageList()}" class="img"
+                                         style="transition: transform 0.5s;"
+                                         th:src="|https://sparta-tdl-bucket.s3.ap-northeast-2.amazonaws.com/${postImg.getFileName()}|"/>
                                 </div>
                             </div>
                             <div style="border-top: 1px solid lightgrey;">
-                                <input id="multipartFiles" type="file" multiple name="multipartFiles" placeholder="사진파일" required
+                                <input id="multipartFiles" type="file" multiple name="multipartFiles" placeholder="사진파일"
+                                       required
                                        style="display: none;"/>
                                 <input type="image" src="/images/files.png" onclick="handleInputClick(event)"
                                        style="height: 30px; position: relative; left: 270px; top: 10px; bottom: 10px;"/>
@@ -119,7 +126,7 @@
                     <tr>
                         <td>
                             <textarea type="text" name="contents" class="image_upload_textarea"
-                                      placeholder="문구입력..."></textarea>
+                                      placeholder="문구입력..." th:text="${post.getContent()}"></textarea>
                         </td>
                     </tr>
                 </table>
@@ -131,8 +138,11 @@
 
 <script>
     var sel_file = [];
+    let imagesSize = 0;
     $(document).ready(function () {
         $("#multipartFiles").on("change", handleImgFileSelect);
+        imagesSize = $(".img_wrap img").length;
+        slideImage();
     });
 
 
@@ -164,7 +174,10 @@
             var img_html = `<img class="img" style="transition: transform 0.5s;" src="${imgData}"/>`;
             $(".img_wrap").append(img_html);
         }
-
+        const imgWrap = document.querySelector(".img_wrap");
+        const IMAGE_WIDTH = 500;
+        imagesSize = $(".img_wrap img").length;
+        imgWrap.style.width = `${IMAGE_WIDTH * imagesSize}px`;
         slideImage(); // Call slideImage() after all images have been processed
     }
 
@@ -183,6 +196,7 @@
         let pages = 0; //현재 인덱스 번호
         let positionValue = 0; //images 위치값
         const IMAGE_WIDTH = 500; //한번 이동 시 IMAGE_WIDTH만큼 이동한다.
+        const imgWrap = document.querySelector(".img_wrap");
         const images = document.querySelectorAll(".img");
         console.log(images)
         //DOM
@@ -223,7 +237,7 @@
                 pages += 1; //다음 페이지로 이동해서 pages를 1증가 시킨다.
                 console.log(pages);
             }
-            if (pages == imagesSize) {
+            if (pages === imagesSize - 1) {
                 //
                 console.log("마지막장");
                 nextBtn.setAttribute("disabled", "true"); //마지막 장일 때 next버튼이 disabled된다.
@@ -235,14 +249,20 @@
             backBtn.setAttribute("disabled", "true"); //속성이 disabled가 된다.
             backBtn.addEventListener("click", back); //클릭시 다음으로 이동한다.
             nextBtn.addEventListener("click", next); //클릭시 이전으로 이동한다.
+            imagesSize = $(".img_wrap img").length;
+            imgWrap.style.width = `${IMAGE_WIDTH * imagesSize}px`; // Adjust img_wrap width
+            console.log("init width " + imgWrap.style.width);
         }
 
         init();
     }
 
-    function uploadData() {
+    function updateData() {
+        alert("들어오긴했니?")
+        const postId = document.getElementById('hiddenInput').value;
         const contents = document.querySelector('.image_upload_textarea').value;
         const token = getToken();
+        alert(token);
         const formData = new FormData();
         const inputFiles = document.getElementById('multipartFiles').files;
 
@@ -251,14 +271,17 @@
         }
 
         formData.append('contents', contents);
+        alert(formData.getAll('contents'));
+        alert(formData.getAll('multipartFiles'));
         $.ajax({
-            url: "/tdl/post",
-            type: 'POST',
+            url: "/tdl/post/" + postId,
+            type: 'PATCH',
             data: formData,
             processData: false,
             contentType: false,
-            headers: { Authorization: token },
+            headers: {Authorization: token},
             success: function (data) {
+                alert("성공");
                 console.log(data);
                 window.location.href = '/tdl/post';
             },
@@ -266,12 +289,14 @@
                 console.error(error);
                 let entries = formData.entries();
                 for (const pair of entries) {
-                    console.log(pair[0]+ ', ' + pair[1]);
+                    console.log(pair[0] + ', ' + pair[1]);
                 }
                 alert("업로드 실패 또는 오류 발생");
             }
         });
+        //return false; // Prevent the form from submitting and reloading the page
     }
+
 
 </script>
 </body>
