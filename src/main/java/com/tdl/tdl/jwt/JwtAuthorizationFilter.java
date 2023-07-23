@@ -48,8 +48,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = jwtUtil.resolveToken(request);
 
             if (token != null) {
+                jwtUtil.refreshAccessToken(token);
+
                 if (!jwtUtil.validateToken(token)) {
-                    jwtUtil.refreshAccessToken(token);
+
                     log.info("Token Error");
                 }
 
