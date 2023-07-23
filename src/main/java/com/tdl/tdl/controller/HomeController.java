@@ -10,4 +10,7 @@ public class HomeController {
     @GetMapping("/")
     public String HomePage() { return "redirect:/tdl/post";}
 
+    @GetMapping("/tdl/search")
+    public String Search() {return "search";}
+
 }

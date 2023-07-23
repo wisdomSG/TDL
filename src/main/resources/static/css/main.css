@@ -287,3 +287,43 @@ float 속성 적용시 이후에 오는 다른 요소들까지같은 속성이 �
     z-index: 1; /* Ensure buttons are on top of images */
     cursor: pointer;
 }
+
+/* 모달 뒷배경 */
+.modal {
+    display: none; /* 초기에는 모달창을 숨깁니다. */
+    position: fixed; /* 다른 요소들 위에 떠 있도록 고정 위치 설정 */
+    z-index: 1; /* 다른 요소들보다 위에 위치하도록 설정 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 투명한 블랙 배경 */
+}
+
+/* 모달창 콘텐츠 */
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    width: 30%;
+    height: 20%;
+}
+
+/* 모달창 닫기 버튼 */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-text {
+    margin-top: 30px;
+}
