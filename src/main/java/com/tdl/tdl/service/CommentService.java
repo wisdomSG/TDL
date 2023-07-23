@@ -70,7 +70,7 @@ public class CommentService {
     }
 
     @Transactional
-    public String deleteComment(Long commentId, User user) {
+    public void deleteComment(Long commentId, User user) {
         Comment comment = findComment(commentId);
 
         if(!confirmUser(comment, user)){
@@ -84,8 +84,6 @@ public class CommentService {
 
         commentRepository.deleteAllByParentId(commentId);
         commentRepository.delete(comment);
-        String msg ="삭제 완료";
-        return msg;
     }
 
     @Transactional

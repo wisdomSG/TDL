@@ -131,14 +131,18 @@
                         <span class="user" th:text="${comment.getProfileName()}">사용자</span>
                         <span class="userComment" th:text="${comment.getContent()}"></span>
                     </div>
-                    <button class="likeHeart" onclick="removeComm()">
-                        <img src="/images/x.png" alt="tkrwp" style="width: 20px; height: 20px;">
+
+                    <button class="likeHeart" th:onclick="|removeComm(${comment.getCommentId()})|">
+                        <img src="/images/x.png" alt="삭제" style="width: 20px; height: 20px;">
                     </button>
                     <button class="likeHeart" onclick="modifyComm()">
-                        <img src="/images/comment.jpg" alt="tnwjd" style="width: 20px; height: 20px;">
+                        <img src="/images/comment.jpg" alt="수정" style="width: 20px; height: 20px;">
                     </button>
                     <button class="likeHeart" onclick="pushHeart()" >
                         <img src="/images/like.jpg" alt="좋아요" style="width: 20px; height: 20px;">
+                    </button>
+                    <button class="likeHeart" onclick="removeComm()">
+                        댓글
                     </button>
                 </li>
             </ul>
@@ -215,7 +219,7 @@
         }
 
     });
-
+    const postId = document.getElementById('postIdValue').value;
     function addComment() {
         // 댓글 입력창의 내용을 가져옵니다.
         const commentInput = document.querySelector('.comment-input');
@@ -230,7 +234,7 @@
             content: content
         };
 
-        const postId = document.getElementById('postIdValue').value;
+
         const auth = getToken();
 
         $.ajax({
@@ -238,6 +242,27 @@
             url: "/tdl/comment/"+postId,
             contentType: "application/json",
             data: JSON.stringify(commentRequest),
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', auth);
+            },
+            success: function (data) {
+                alert("성공");
+                console.log(data);
+                window.location.href = '/tdl/post/'+postId;
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("업로드 실패 또는 오류 발생");
+            }
+        })
+    }
+
+    function removeComm(commentId) {
+        const auth = getToken();
+        $.ajax({
+            type: "DELETE",
+            url:"/tdl/comment/"+commentId,
+            contentType:"application/json",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', auth);
             },

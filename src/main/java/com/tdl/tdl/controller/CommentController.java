@@ -43,9 +43,10 @@ public class CommentController {
 
     @ResponseBody
     @DeleteMapping("/{commentId}")
-    public String deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.deleteComment(commentId, userDetails.getUser());
+    public void deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        commentService.deleteComment(commentId, userDetails.getUser());
     }
+
     @ResponseBody
     @PostMapping("/like/{id}")
     public String likeBoard (@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
