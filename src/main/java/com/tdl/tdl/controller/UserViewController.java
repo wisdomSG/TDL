@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserViewController {
 
     @GetMapping("/user/login")
-    public String loginPage() { return "login";}
+    public String loginPage() {
+        System.out.println("?");
+        return "login";}
 
 
     @GetMapping("/user/signup")
