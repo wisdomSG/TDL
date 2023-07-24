@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -32,9 +31,12 @@ public class PostService {
 
     // 게시물 등록
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, List<MultipartFile> multipartFiles, User user) {
+    public void createPost(PostRequestDto requestDto, User user) throws Exception {
+        if (requestDto.getMultipartFiles() == null) {
+            throw new Exception("파일 업로드 필수");
+        }
         // Aws에 이미지 저장
-        List<String> imgPaths = awsS3Service.uploadFile(multipartFiles);
+        List<String> imgPaths = awsS3Service.uploadFile(requestDto.getMultipartFiles());
 
         Post post = postRepository.save(new Post(requestDto, imgPaths, user));
         postRepository.save(post);
@@ -46,18 +48,18 @@ public class PostService {
             imgList.add(img.getFileName());
         }
 
-        return new PostResponseDto(post);
+        new PostResponseDto(post);
     }
 
     // 게시물 선택 조회
     public PostResponseDto getSelectPost(Long id) {
         Post post = findPost(id);
-        return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
+        return new PostResponseDto(post);
     }
 
     // 게시물 수정
     @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, List<MultipartFile> multipartFiles, User user) {
+    public void updatePost(Long id, PostRequestDto requestDto, User user) {
         Post post = findPost(id);
         confirmUser(post, user);
 
@@ -70,7 +72,7 @@ public class PostService {
         postImageRepository.deleteAll(post.getPostImageList());
 
         // Aws에 수정된 이미지 저장
-        List<String> imgPaths = awsS3Service.uploadFile(multipartFiles);
+        List<String> imgPaths = awsS3Service.uploadFile(requestDto.getMultipartFiles());
 
         List<String> imgList = new ArrayList<>();
         for (String imgUrl : imgPaths) {
@@ -79,7 +81,7 @@ public class PostService {
             imgList.add(img.getFileName());
         }
         post.update(requestDto, imgList);
-        return ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
+        ResponseEntity.ok().body(new PostResponseDto(post)).getBody();
     }
 
     // 게시물 삭제
