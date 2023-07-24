@@ -83,7 +83,7 @@ header{
 .main_container .middle_Box{
     display: flex;
     background: white;
-    border: 1px solid rgb(213, 213, 213);
+
     align-items: center;
     flex-direction: row;
     height: 100%;
@@ -171,7 +171,7 @@ header{
     display: inline;
 }
 .comment_part .likeHeart{
-    width: 50px;
+    width: 30px;
     height: 30px;
     float: right;
     background: none;

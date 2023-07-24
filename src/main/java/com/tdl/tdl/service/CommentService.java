@@ -24,7 +24,7 @@ public class CommentService {
     private final MessageSource messageSource;
 
     @Transactional
-    public CommentResponseDto addComment(Long postId, CommentRequestDto requestDto, User user) {
+    public void addComment(Long postId, CommentRequestDto requestDto, User user) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new NullPointerException(messageSource.getMessage(
                         "not.exist.post",
@@ -35,7 +35,7 @@ public class CommentService {
         );
         Comment comment = commentRepository.save(new Comment(requestDto, user, post));
 
-        return new CommentResponseDto(comment);
+        new CommentResponseDto(comment);
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class CommentService {
     }
 
     @Transactional
-    public String deleteComment(Long commentId, User user) {
+    public void deleteComment(Long commentId, User user) {
         Comment comment = findComment(commentId);
 
         if(!confirmUser(comment, user)){
@@ -84,8 +84,6 @@ public class CommentService {
 
         commentRepository.deleteAllByParentId(commentId);
         commentRepository.delete(comment);
-        String msg ="삭제 완료";
-        return msg;
     }
 
     @Transactional

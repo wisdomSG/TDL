@@ -7,8 +7,10 @@
     <title>main_page</title>
     <link rel = "stylesheet" href="/css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="/js/token.js"></script>
 </head>
 <body>
 <script>
@@ -27,6 +29,9 @@
                 <a href="/tdl/post"><img class = "plus" src="/css/home.png" alt="plus"></a>
             </li>
             <li>
+                <a id="addPost" onclick="goAddPost()"><img class = "plus" src="/images/addPost.png" alt="plus"></a>
+            </li>
+            <li>
                 <a id="signup-text" href="/tdl/view/user/signup"><img class = "heart" src="/css/signup.png" alt="heart"   ></a>
                 <a id="mypage-text" href="/tdl/user/profile"><img class = "heart" src="/css/profile.png" alt="heart" ></a>
             </li>
@@ -38,24 +43,31 @@
     </div>
 </header>
 <div class="main_container" th:each="post : ${postList}">
+    <input type="hidden" th:id="'post'+${post.getPostId()}">
     <div class ="middle_Top">
         <ul>
             <li>
-                <a href="#"><img class="my_photo" th:src="${post.getUserImage()}" alt="my_photo"></a>
+                <a href="#"><img class="my_photo" th:src="${post.getUser().getUserImage()}" alt="my_photo"></a>
             </li>
         </ul>
         <ul>
             <li class="my_account">
-                <a href="#" type="text" th:text="${post.getProfilename()}"></a>
+                <a href="#" type="text" th:text="${post.getUser().getProfilename()}"></a>
             </li>
         </ul>
         <ul>
-            <li>
+            <li th:if="${post.getUser().getProfilename()}" class="menu_with_submenu">
                 <a href="#"><img class="dot" src="img/dot.png" alt="dot"></a>
+                <div class="submenu">
+                    <ul>
+                        <li><a th:onclick="'modifyPost('+${post.getPostId()}+')'">수정하기</a></li>
+                        <li><a th:onclick="'deletePost('+${post.getPostId()}+')'">삭제하기</a></li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>
-    <div class="slide" style="width: 600px; height: 600px; overflow: hidden; position: relative;">
+    <div class="slide" style="width: 600px; height: 600px; overflow: hidden; position: relative; border: 1px solid rgb(213, 213, 213);">
         <div class="middle_Box">
             <img th:each="postImage : ${post.getPostImageList()}" class = "photo" th:src="|https://sparta-tdl-bucket.s3.ap-northeast-2.amazonaws.com/${postImage.getFileName()}|" alt="photo">
         </div>
@@ -64,18 +76,12 @@
     </div>
 
     <div class="middle_review">
-        <div class = "review_icon">
+        <div class="review_icon">
             <ul class="fixedclear"> <!--좋아요 부분이 아이콘 밑으로 내려가면 clear both를 주어야한다-->
                 <button class="heartBtn" onclick="addLike()"><i class=" xi-heart-o xi-2x"></i>
                 </button>
                 <li>
-                    <button class="spBubble"><i class="xi-speech-o xi-2x"></i></button>
-                </li>
-                <li>
-                    <button class="send"><i class="xi-location-arrow xi-2x"></i></button>
-                </li>
-                <li>
-                    <button class="bookmark"><i class="xi-bookmark-o xi-2x"></i></button>
+                    <button class="spBubble" th:onclick="'getPostDetail('+${post.getPostId()}+')'"><i class="xi-speech-o xi-2x"></i></button>
                 </li>
             </ul>
         </div>
@@ -89,12 +95,9 @@
                     <li class="li">
                         <div>
                             <div class="comment">
-                                <span class="user" th:text="${post.getProfilename()}"></span>
+                                <span class="user" th:text="${post.getUser().getProfilename()}"></span>
                                 <span class="userComment" th:text="${post.getContent()}"></span>
-
                             </div>
-                            <button class="likeHeart" onclick="pushHeart()" ></button>
-                            <button class="removeComment" onclick="removeComm()" ></button>
                         </div>
                         <time class="before" th:text="${post.getCreatedAt()}"></time>
                     </li>
@@ -103,19 +106,29 @@
         </div>
     </div>
 </div>
-<script src="js/main.js"></script>
 <script>
-    document.addEventListener("click", function (event) {
-        const submenu = document.querySelector(".submenu");
-        const dot = document.querySelector(".dot");
-        if (event.target === dot) {
-            // If the "dot" element is clicked, toggle the display of the submenu
-            submenu.style.display = submenu.style.display === "block" ? "none" : "block";
-        } else if (!submenu.contains(event.target)) {
-            // If a click happens outside the "dot" element and the submenu, hide the submenu
-            submenu.style.display = "none";
-        }
+    const menuWithSubmenuList = document.querySelectorAll(".menu_with_submenu");
+    menuWithSubmenuList.forEach((menuWithSubmenu) => {
+        menuWithSubmenu.addEventListener("click", function (event) {
+            event.preventDefault(); // 페이지 맨 위로 이동하는 기본 동작을 막음
+
+            const submenu = menuWithSubmenu.querySelector(".submenu");
+            if (submenu.style.display === "block") {
+                submenu.style.display = "none";
+            } else {
+                // 다른 menuWithSubmenu를 클릭하면 모든 submenu를 숨기도록 처리
+                menuWithSubmenuList.forEach((menu) => {
+                    const sub = menu.querySelector(".submenu");
+                    if (sub !== submenu) {
+                        sub.style.display = "none";
+                    }
+                });
+
+                submenu.style.display = "block";
+            }
+        });
     });
+
 
     // 각 슬라이드 컨테이너를 가져옵니다.
     const slideContainers = document.querySelectorAll('.slide');
@@ -168,83 +181,63 @@
 
     });
 
-
-    // 페이지가 로드될 때 start 함수를 호출합니다.
-    document.addEventListener("DOMContentLoaded", function () {
-        start();
-    });
-
-    function start() {
+    function getPostDetail(postId) {
         const auth = getToken();
-        console.log("auth=", auth);
-        if (auth === '') {
-            document.getElementById('login-text').style.display = 'block';
-            document.getElementById('signup-text').style.display = 'block';
-            document.getElementById('logout-text').style.display = 'none';
-            document.getElementById('mypage-text').style.display = 'none';
-        } else {
-            document.getElementById('login-text').style.display = 'none';
-            document.getElementById('signup-text').style.display = 'none';
-            document.getElementById('logout-text').style.display = 'block';
-            document.getElementById('mypage-text').style.display = 'block';
-            const postBoxes = document.getElementsByClassName('postbox');
-            for (let i = 0; i < postBoxes.length; i++) {
-                postBoxes[i].style.display = 'block';
-            }
-        }
-    }
-
-    function getToken() {
-        let auth = getCookie('Authorization');
-        if (auth === undefined || auth == null) {
-            return '';
-        }
-        return auth;
-    }
-
-    function getCookie(cookieName) {
-        var name = cookieName + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var cookieArray = decodedCookie.split(';');
-        for (var i = 0; i < cookieArray.length; i++) {
-            var cookie = cookieArray[i];
-            while (cookie.charAt(0) == ' ') {
-                cookie = cookie.substring(1);
-            }
-            if (cookie.indexOf(name) == 0) {
-                return cookie.substring(name.length, cookie.length);
-            }
-        }
-        return "";
-    }
-
-    //로그아웃
-    function logout() {
-        let authCookie = getCookie('Authorization');
-        console.log(authCookie);
         $.ajax({
-            url: 'http://localhost:8080/tdl/user/logout',
-            type: 'POST',
-            headers: {
-                'Authorization': authCookie
-            },
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                Cookies.remove('Authorization', {path: '/'}); // 쿠키삭제
-                // 요청 성공 시 처리할 로직
-                alert("로그아웃 성공 !");
-
-                window.location.reload();
-
-            },
-            error: function(xhr, status, error) {
-                console.log(xhr);
-                alert("로그아웃 실패 !");
+            type: "GET",
+            url:"/tdl/post/"+postId,
+            contentType:"application/json",
+            data:{Authorization: auth},
+            success:function (response){
+                window.location.href = "/tdl/post/"+postId;
             }
-        });
+        })
     }
 
+    function goAddPost() {
+        const auth = getToken();
+        $.ajax({
+            type: "GET",
+            url:"/tdl/post/add",
+            contentType:"application/json",
+            data:{Authorization: auth},
+            success:function (response){
+                window.location.href = "/tdl/post/add";
+            }
+        })
+    }
+
+    function modifyPost(id) {
+        const auth = getToken();
+        $.ajax({
+            type: "GET",
+            url:"/tdl/post/modify/"+id,
+            contentType:"application/json",
+            headers: { Authorization: auth }
+        })
+            .done(function (res, status, xhr) {
+                window.location.href ="/tdl/post/update/"+id;
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                console.log('statusCode: ' + xhr.status);
+            });
+    }
+
+    function deletePost(id) {
+        const auth = getToken();
+        $.ajax({
+            type: "DELETE",
+            url:"/tdl/post/"+id,
+            contentType:"application/json",
+            headers: { Authorization: auth }
+        })
+            .done(function (res, status, xhr) {
+                window.location.href ="/tdl/post";
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                console.log('statusCode: ' + xhr.status);
+            });
+    }
 </script>
 </body>
 </html>
