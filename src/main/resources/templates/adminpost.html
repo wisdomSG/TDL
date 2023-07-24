@@ -692,38 +692,37 @@
                 var tagId = e.target.value
                 console.log(tagId)
 
-                // $.ajax({
-                //     url: `http://localhost:8080/tdl/admin/post/${tagId}`,
-                //     type: 'DELETE',
-                //     contentType: 'application/json',
-                //     headers: {
-                //         'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
-                //     },
-                //     success: function (response) {
-                //         if (response) {
-                //             window.location.reload();
-                //         }
-                //     }
-                // })
+                $.ajax({
+                    url: `http://localhost:8080/tdl/post/${tagId}`,
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                    },
+                    success: function (response) {
+                        if (response) {
+                            window.location.href = `http://localhost:8080/tdl/post/${tagId}`;
+                        }
+                    }
+                })
             })
             $(document).on('click',"div[class='fix']" , function (e) {
                 e.preventDefault();
                 var tagId = e.target.value
                 console.log(tagId)
-                // $.ajax({
-                //     url: `http://localhost:8080/tdl/admin/post/${tagId}`,
-                //     type: 'DELETE',
-                //     contentType: 'application/json',
-                //     headers: {
-                //         'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
-                //     },
-                //     success: function (response) {
-                //         if (response) {
-                //             window.location.reload();
-                //         }
-                //     }
-                // })
-
+                $.ajax({
+                    url: `http://localhost:8080/tdl/post/update/${tagId}`,
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                    },
+                    success: function (response) {
+                        if (response) {
+                            window.location.href = `http://localhost:8080/tdl/post/update/${tagId}`;
+                        }
+                    }
+                })
         })
         $(document).on('click',"div[class='Searchbutton']" , function (e) {
             e.preventDefault();
