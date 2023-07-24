@@ -29,21 +29,32 @@ public class AdminController {
             PageInfo pageInfo = new PageInfo((int)pagePost.getTotalElements(),page);
             List<AdminPostResponseDto> list=pagePost.map(AdminPostResponseDto::new).getContent();
             List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
-            return new AdminPostOrUserResponseDto(list,pageInfo,categoryDtoList,"."); // categoryDtoList 존재하는 카테고리도 같이 반환
+            AdminUserResponseDto userInfo = adminService.getAdminUserInfo(userDetails.getUser());
+            return new AdminPostOrUserResponseDto(list,pageInfo,categoryDtoList,userInfo,"."); // categoryDtoList 존재하는 카테고리도 같이 반환
+
 
         } else if (category.equals("회원관리")) {
             Page<User> pageUser = adminService.getUser(page-1 , userDetails.getUser());
             PageInfo pageInfo = new PageInfo((int)pageUser.getTotalElements(),page);
             List<AdminUserResponseDto> list=pageUser.map(AdminUserResponseDto::new).getContent();
             List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
-            return new AdminPostOrUserResponseDto(list,pageInfo,categoryDtoList);
+            AdminUserResponseDto userInfo = adminService.getAdminUserInfo(userDetails.getUser());
+            return new AdminPostOrUserResponseDto(list,pageInfo,categoryDtoList,userInfo);
         }
         return null;
     }
 
     @GetMapping("/user/{user_id}") // 특정 유저의 게시글 조회
-    public AdminSelectUserResponseDto getSelectUser(@PathVariable Long user_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return new AdminSelectUserResponseDto(adminService.getSelectUser(user_id,userDetails.getUser()),adminService.getSelectUserPosts(user_id));
+    public AdminSelectUserResponseDto getSelectUser(@PathVariable String user_id,
+                                                    @RequestParam("page")int page,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+        Page<Post> pagePost = adminService.getSearchName(page - 1, userDetails.getUser(), user_id);
+        PageInfo pageInfo = new PageInfo((int) pagePost.getTotalElements(), page);
+        List<AdminPostResponseDto> list = pagePost.map(AdminPostResponseDto::new).getContent();
+        List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
+        AdminUserResponseDto userInfo = adminService.getAdminUserInfo(userDetails.getUser());
+
+        return new AdminSelectUserResponseDto(list, pageInfo, categoryDtoList,userInfo);
     }
 
     @DeleteMapping("/user/{user_id}") // 특정 유저 삭제
@@ -65,14 +76,18 @@ public class AdminController {
             PageInfo pageInfo = new PageInfo((int) pagePost.getTotalElements(), page);
             List<AdminPostResponseDto> list = pagePost.map(AdminPostResponseDto::new).getContent();
             List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
-            return new AdminSelectUserResponseDto(list, pageInfo, categoryDtoList);
+            AdminUserResponseDto userInfo = adminService.getAdminUserInfo(userDetails.getUser());
+            return new AdminSelectUserResponseDto(list, pageInfo, categoryDtoList,userInfo);
+
 
         } else if (option.equals("내용")) { // info 에 글 내용 입력하면 일치하는 글 다 나옴 ->
             Page<Post> pagePost = adminService.getSearchContent(page - 1, userDetails.getUser(), info);
             PageInfo pageInfo = new PageInfo((int) pagePost.getTotalElements(), page);
             List<AdminPostResponseDto> list = pagePost.map(AdminPostResponseDto::new).getContent();
             List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
-            return new AdminSelectUserResponseDto(list, pageInfo, categoryDtoList);
+            AdminUserResponseDto userInfo = adminService.getAdminUserInfo(userDetails.getUser());
+
+            return new AdminSelectUserResponseDto(list, pageInfo, categoryDtoList,userInfo);
 
         }
         return null;
@@ -88,5 +103,6 @@ public class AdminController {
         List<AdminUserResponseDto> TopThreeFollowCount = adminService.getTopThreeFollowCount();
         List<CategoryContentsResponseDto> categoryDtoList = categoryService.getCategorys();
         return new AdminHome(userResponseDto,totalUser,totalPost,DayOfTheWeekResponse,TopThreeLike,TopThreeFollowCount,categoryDtoList);
+
     }
 }

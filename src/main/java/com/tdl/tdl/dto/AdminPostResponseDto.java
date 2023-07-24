@@ -12,13 +12,13 @@ public class AdminPostResponseDto {
     private String Username;
     private int likeCount;
     private LocalDateTime createdAt;
-
+    private String userImage;
     public AdminPostResponseDto(Post post) {
         this.id = post.getPostId();
         this.content = post.getContent();
         this.Username = post.getUser().getUsername();
         this.likeCount = post.getLikesCount();
         this.createdAt = post.getCreatedAt();
-
+        this.userImage = post.getUser().getUserImage();
     }
 }

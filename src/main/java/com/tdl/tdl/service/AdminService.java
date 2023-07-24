@@ -31,7 +31,7 @@ public class AdminService {
         confirmAdminToken(user);
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction,"postId");
-        Pageable pageable = PageRequest.of(page,4,sort);
+        Pageable pageable = PageRequest.of(page,2,sort);
         return postRepository.findAll(pageable);
     }
 
@@ -39,22 +39,22 @@ public class AdminService {
         confirmAdminToken(user);
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction,"UserId");
-        Pageable pageable = PageRequest.of(page,4,sort);
+        Pageable pageable = PageRequest.of(page,2,sort);
         return userRepository.findAll(pageable);
     }
 
-    public AdminUserResponseDto getSelectUser(Long userId, User IsAdminUser) { // 특정 유저의 info랑 작성한 게시글 전부 반환
-        confirmAdminToken(IsAdminUser);
-        User user=findUserId(userId);
-        return new AdminUserResponseDto(user);
-    }
-    public List<AdminPostResponseDto> getSelectUserPosts(Long userId) {
-        List<AdminPostResponseDto> postResponseDtoList = new ArrayList<>();
-        for (Post post : postRepository.findAllByUser_UserId(userId)) {
-            postResponseDtoList.add(new AdminPostResponseDto(post));
-        }
-        return postResponseDtoList;
-    }
+//    public AdminUserResponseDto getSelectUser(Long userId, User IsAdminUser) { // 특정 유저의 info랑 작성한 게시글 전부 반환
+//        confirmAdminToken(IsAdminUser);
+//        User user=findUserId(userId);
+//        return new AdminUserResponseDto(user);
+//    }
+//    public List<AdminPostResponseDto> getSelectUserPosts(Long userId) {
+//        List<AdminPostResponseDto> postResponseDtoList = new ArrayList<>();
+//        for (Post post : postRepository.findAllByUser_UserId(userId)) {
+//            postResponseDtoList.add(new AdminPostResponseDto(post));
+//        }
+//        return postResponseDtoList;
+//    }
 
     public String deleteSelectUser(Long userId, User IsAdminUser) { // 특정유저 삭제
         confirmAdminToken(IsAdminUser);
@@ -86,11 +86,12 @@ public class AdminService {
     }
 
 
+
     public Page<Post> getSearchName(int page, User IsAdminUser,String info) {
         confirmAdminToken(IsAdminUser);
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction,"postId");
-        Pageable pageable = PageRequest.of(page,4,sort);
+        Pageable pageable = PageRequest.of(page,2,sort);
         User user =userRepository.findByUsername(info).get();
         return postRepository.findAllByUser_UserId(user.getUserId() , pageable);
     }
@@ -99,7 +100,7 @@ public class AdminService {
         confirmAdminToken(IsAdminUser);
         Sort.Direction direction = Sort.Direction.DESC;
         Sort sort = Sort.by(direction,"postId");
-        Pageable pageable = PageRequest.of(page,4,sort);
+        Pageable pageable = PageRequest.of(page,2,sort);
         return postRepository.findByContentContaining(info,pageable);
     }
 
@@ -197,6 +198,7 @@ public class AdminService {
 
 
     public AdminUserResponseDto getAdminUserInfo(User user) {
+
         confirmAdminToken(user);
         return new AdminUserResponseDto(user);
     }

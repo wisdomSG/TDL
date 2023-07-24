@@ -18,7 +18,7 @@ public class PageInfo {
     boolean showPrev; //이전 페이지로 이동하는 링크를 보여줄것이지 여부
     boolean showNext; //다음 페이지로 이동하는 링크를 보여줄것이지 여부
     public PageInfo(int totalCnt, int page){
-        this(totalCnt,page, 4);
+        this(totalCnt,page, 2);
     }
 
     public PageInfo(int totalCnt , int page , int pageSize){
