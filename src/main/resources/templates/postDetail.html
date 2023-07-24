@@ -312,7 +312,7 @@
         const auth = getToken();
         $.ajax({
             type: "PATCH",
-            url: "/tdl/comment/"+postId,
+            url: "/tdl/comment/"+commentId,
             contentType: "application/json",
             data: JSON.stringify(commentRequest),
             beforeSend: function (xhr) {
