@@ -140,6 +140,7 @@ public class JwtUtil {
             // Access Token에서 사용자 정보 추출
             Claims claims = getUserInfoFromToken(accessToken);
             String username = claims.getSubject();
+            log.info(username);
 
             // Redis에서 저장된 Refresh Token 가져오기
             String refreshToken = (String) redisUtil.get(username);
@@ -154,7 +155,7 @@ public class JwtUtil {
                 return newAccessToken;
             }
         }
-
+        log.info("accessToken 시간 남음");
         return null;
     }
     private boolean isAccessTokenExpired(String accessToken) {

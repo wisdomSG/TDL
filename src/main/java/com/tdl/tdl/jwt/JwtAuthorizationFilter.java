@@ -41,9 +41,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = jwtUtil.getTokenFromCookie(request);
             log.info(token);
             if (token != null) {
+              
+                jwtUtil.refreshAccessToken(token);
                 token = jwtUtil.substringToken(token);
+              
                 if (!jwtUtil.validateToken(token)) {
-                    jwtUtil.refreshAccessToken(token);
+
                     log.info("Token Error");
                 }
 
