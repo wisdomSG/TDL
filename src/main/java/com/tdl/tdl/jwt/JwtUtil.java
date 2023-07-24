@@ -11,7 +11,9 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,6 +23,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Collection;
@@ -60,7 +65,21 @@ public class JwtUtil {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
-
+    public String getTokenFromCookie(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
+                    try {
+                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value 다시 Decode
+                    } catch (UnsupportedEncodingException e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         // token 이 null 또는 공백인지 체크 && 토큰이 정상적으로 Bearer 를 가지고 있는지 체크
@@ -69,7 +88,15 @@ public class JwtUtil {
         }
         return null;
     }
-
+    public String substringToken(String tokenValue) {
+        // 공백과 null이 아닌지 확인 && 'Bearer '로 시작하는지 확인
+        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
+            // 'Bearer ' 잘라내기
+            return tokenValue.substring(7);
+        }
+        log.error("Not Found Token");
+        throw new NullPointerException("Not Found Token");
+    }
     // 토큰 생성
     public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
@@ -84,6 +111,19 @@ public class JwtUtil {
                         .compact();
 
     }
+//    public void addJwtToCookie(String token, HttpServletResponse res) {
+//        try {
+//            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
+//
+//            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
+//            cookie.setPath("/");
+//
+//            // Response 객체에 Cookie 추가
+//            res.addCookie(cookie);
+//        } catch (UnsupportedEncodingException e) {
+//            log.error(e.getMessage());
+//        }
+//    }
 
     public String createRefreshToken() {
         Date date = new Date();

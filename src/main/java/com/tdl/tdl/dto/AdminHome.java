@@ -12,7 +12,7 @@ public class AdminHome {
     private List<AdminPostResponseDto> topThreeLike;
     private List<AdminUserResponseDto> topThreeFollowCount;
     private List<CategoryContentsResponseDto> categoryDtoList;
-    public AdminHome(AdminUserResponseDto userResponseDto, List<AdminTotalUserResponse> totalUser, List<AdminTotalPostResponse> totalPost,
+    public AdminHome( AdminUserResponseDto userResponseDto,List<AdminTotalUserResponse> totalUser, List<AdminTotalPostResponse> totalPost,
                      List<AdminDayOfTheWeekResponse> dayOfTheWeekResponse, List<AdminPostResponseDto> topThreeLike,
                      List<AdminUserResponseDto> topThreeFollowCount, List<CategoryContentsResponseDto> categoryDtoList) {
         this.userResponseDto = userResponseDto;

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 라이브러리 추가 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<title>home</title>
+<style>
+    .Dashboard {
+        width: 1440px;
+        height: 910px;
+        position: relative;
+        background: #FDFDFD
+    }
+    .Sidebar {
+        width: 270px;
+        height: 950px;
+        left: 0px;
+        top: 0px;
+        position: absolute
+    }
+    .categoryBar {
+        width: 270px;
+        height: 950px;
+        left: 0px; top: 0px;
+        position: absolute;
+        background: #F2EAE1
+    }
+    .Profile {
+        width: 129px;
+        height: 196px;
+        left: 70px;
+        top: 96px;
+        position: absolute
+    }
+    .Admin {left: 41px;
+        top: 179px;
+        position: absolute;
+        color: #FEAF00;
+        font-size: 14px;
+        font-family: Montserrat;
+        font-weight: 500;
+        word-wrap: break-word
+    }
+    .one {
+        width: 128px;
+        height: 128px;
+        /* flex-shrink: 0; */
+        /* fill: #C4C4C4; */
+        left: 1px;
+        top: 0px;
+        position: absolute;
+        /* background: #C4C4C4; */
+        border-radius: 9999px
+    }
+    .AdminName {
+        width: 129px;
+        left: 0px;
+        top: 148px;
+        position: absolute;
+        text-align: center;
+        color: black;
+        font-size: 17px;
+        font-family: Montserrat;
+        font-weight: 700;
+        word-wrap: break-word
+
+    }
+    .Navlinks{
+        width: 193px; height: 497px; left: 39px; top: 372px; position: absolute
+    }
+    .categoryhome{
+        width: 19px; height: 17px; left: 41px; top: 11px; position: absolute
+    }
+    .Vector{
+        width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;
+    }
+    .categoryuser{
+        width: 19px; height: 17px; left: 41px; top: 71px; position: absolute;
+    }
+    .categorypost{
+        width: 19px; height: 17px; left: 40px; top: 131px; position: absolute
+    }
+    .Board{
+        left: 75px; top: 131px; position: absolute; color: black; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .User{
+        left: 75px; top: 72px; position: absolute; color: black; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .Home{
+        left: 75px; top: 11px; position: absolute; color: black; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .optionbar{
+        width: 1170px; height: 37px; left: 145px; top: 12px; position: absolute
+    }
+    .selectpicker{
+        display: inline; width: 100px; left: 500px; height:37px; font-size:10px;border-radius: 10px; border: 0.50px #E5E5E5 solid
+    }
+    .Search{
+        width: 900px; height: 37px; left: 265px; top: 12px; position: absolute
+    }
+    .SearchBar{
+        width: 900px; height: 37px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 8px; border: 0.50px #E5E5E5 solid
+    }
+    .innerSearch{
+        width: 59.15px; left: 13.49px; top: 9px; position: absolute; color: #C4C4C4; font-size: 14px; font-family: Montserrat; font-weight: 400; word-wrap: break-word
+    }
+    .Searchbutton{
+        width: 14.53px; height: 14px; left: 850px; top: 11px; position: absolute
+    }
+    .Vector2{
+        width: 33.29px; height: 34px; left: 20px; top: 17px; position: absolute; background: white; border: 0.50px
+    }
+    .TotalUser{
+        width: 220px; height: 157px; left: 425px; top: 81px; position: absolute
+    }
+    .border_user_post{
+        width: 220px; height: 157px; left: 0px; top: 0px; position: absolute; background: #FEF6FB; border-radius: 8px
+    }
+    .TotalUsername{
+        left: 20px; top: 73px; position: absolute; color: #6C6C6C; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .totalusercount{
+        left: 180px; top: 105px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase; word-wrap: break-word
+    }
+    .totalusertendency{
+        width: 64px; left: 149px; top: 105px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase
+    }
+    .totayusertendency{
+        width: 64px; left: 149px; top: 105px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase
+    }
+    .Users{
+        width: 220px; height: 157px; left: 659px; top: 81px; position: absolute
+    }
+    .Username{
+        left: 20px; top: 73px; position: absolute; color: #6C6C6C; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .TotalPosts{
+        width: 220px; height: 157px; left: 900px; top: 88px; position: absolute
+    }
+    .TotalPost{
+        left: 15px; top: 73px; position: absolute; color: #6C6C6C; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .totalpostcount{
+        left: 180px; top: 102px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase; word-wrap: break-word
+    }
+    .totalposttendency{
+        width: 64px; left: 142px; top: 102px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase; word-wrap: break-word
+    }
+    .posttendency{
+        width: 64px; left: 147px; top: 102px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase; word-wrap: break-word
+    }
+    .Post{
+        width: 220px; height: 157px; left: 1140px; top: 93px; position: absolute
+    }
+    .Posts{
+        left: 20px; top: 73px; position: absolute; color: #6C6C6C; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .top3likes{
+        width: 523px; height: 245px; padding-top: 23.14px; padding-bottom: 15.43px; padding-left: 23.14px; left: 876px; top: 591px; position: absolute; background: white; border-radius: 15.43px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 15.43px; display: inline-flex
+    }
+    .top3liketitle{
+        width: 500px; height: 27px; color: #00261C; font-size: 23.14px; font-family: Abel; font-weight: 400; letter-spacing: 0.37px; word-wrap: break-word
+    }
+    .top1like{
+        width: 38.57px; height: 38.57px; padding: 15.43px;  border-radius: 7.71px; justify-content: center; align-items: center; display: flex
+    }
+    .top3username{
+        width: 77.68px; color: #707EAE; font-size: 15.43px; font-family: Abel; font-weight: 400; letter-spacing: 0.25px; word-wrap: break-word
+    }
+    .top3postname{
+        width: 77.68px; color: #707EAE; font-size: 15.43px; font-family: Abel; font-weight: 400; letter-spacing: 0.25px; word-wrap: break-word
+    }
+    .top3postlikecnt{
+        width: 69.42px; color: #707EAE; font-size: 15.43px; font-family: Abel; font-weight: 400; letter-spacing: 0.25px; word-wrap: break-word
+    }
+    .top2like{
+        width: 38.57px; height: 38.57px; padding: 15.43px;  border-radius: 7.71px; justify-content: center; align-items: center; display: flex
+    }
+    .top3like{
+        width: 38.57px; height: 38.57px; padding: 15.43px;  border-radius: 7.71px; justify-content: center; align-items: center; display: flex
+    }
+    .top3follow{
+        width: 475px; height: 245px; padding-top: 23.14px; padding-bottom: 15.43px; padding-left: 23.14px; left: 370px; top: 591px;position: absolute; background: white; border-radius: 15.43px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 15.43px; display: inline-flex
+    }
+    .top3followtitle{
+        width: 500px; height: 27px; color: #00261C; font-size: 23.14px; font-family: Abel; font-weight: 400; letter-spacing: 0.37px; word-wrap: break-word
+    }
+    .top1follow{
+        width: 38.57px; height: 38.57px; padding: 15.43px; border-radius: 7.71px; justify-content: center; align-items: center; display: flex
+    }
+    .top2follow{
+        width: 38.57px; height: 38.57px; padding: 15.43px; border-radius: 7.71px; justify-content: center; align-items: center; display: flex
+    }
+    .top3follows{
+        width: 38.57px; height: 38.57px; padding: 15.43px; border-radius: 7.71px; justify-content: center; align-items: center; display: flex
+    }
+    .top3followusername{
+        width: 77.68px; color: #707EAE; font-size: 15.43px; font-family: Abel; font-weight: 400; letter-spacing: 0.25px; word-wrap: break-word
+    }
+    .top3followcnt{
+        width: 69.42px; color: #707EAE; font-size: 15.43px; font-family: Abel; font-weight: 400; letter-spacing: 0.25px; word-wrap: break-word
+    }
+    input[type=text]         {width: 900px; height: 37px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 8px; border: 0.50px #E5E5E5 solid}
+
+
+</style>
+<body>
+<div class="Dashboard">
+    <div class="TotalUser">
+
+    </div>
+
+    <div class="Users">
+
+    </div>
+</div>
+
+<div class="TotalPosts">
+
+</div>
+
+<div class="Post">
+</div>
+
+<div class = "bargraph"style="width:454px; height: 278px; left: 420px; top: 312px; position: absolute">
+    <canvas  id ="myChart" width="400" height="400px"></canvas>
+<!--    <script> // 데이터 불러올때 그때 데이터 넣어주면됨 const chartArea = document.getElementById('myChart').getContext('2d');로 찾아서-->
+<!--    // 차트를 그럴 영역을 dom요소로 가져온다.-->
+<!--    const chartArea = document.getElementById('myChart').getContext('2d');-->
+<!--    // 차트를 생성한다.-->
+<!--    var myChart = new Chart(chartArea, {-->
+<!--        // ①차트의 종류(String)-->
+<!--        type: 'bar',-->
+<!--        // ②차트의 데이터(Object)-->
+<!--        data: {-->
+<!--            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],-->
+<!--            datasets: [{-->
+<!--                label: '저번주',-->
+<!--                data: [12, 19, 3, 17, 28, 24, 7],-->
+<!--                backgroundColor: "rgba(255,0,0,1)"-->
+<!--            }, {-->
+<!--                label: '저저번주',-->
+<!--                data: [30, 29, 5, 5, 20, 3, 10],-->
+<!--                backgroundColor: "rgba(0,0,255,1)"-->
+<!--            }]-->
+<!--        },-->
+<!--        // ⑩차트의 설정(Object)-->
+<!--        options: {-->
+<!--            maintainAspectRatio: false, //default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.-->
+
+<!--            // ⑪축에 관한 설정(Object)-->
+<!--            scales: {-->
+<!--                // ⑫y축에 대한 설정(Object)-->
+<!--                y: {-->
+<!--                    // ⑬시작을 0부터 하게끔 설정(최소값이 0보다 크더라도)(boolean)-->
+<!--                    beginAtZero: true-->
+<!--                }-->
+<!--            },-->
+<!--            title: {-->
+<!--                display: true,-->
+<!--                text: ' 2주간 요일별 게시글 작성 수'-->
+<!--            }-->
+
+<!--        },-->
+
+<!--    });-->
+<!--    </script>-->
+</div>
+
+<div class = "circlegraph"style="width: 454px; height: 278px; left: 883px; top: 312px; position: absolute">
+    <canvas id="pie-chart" width="400" height="250"></canvas>
+<!--    <script>new Chart(document.getElementById("pie-chart"), {-->
+<!--        type: 'pie',-->
+<!--        data: {-->
+<!--            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],-->
+<!--            datasets: [{-->
+<!--                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],-->
+<!--                data: [5,5,5,5,5,5,5]-->
+<!--            }]-->
+<!--        },-->
+<!--        options: {-->
+<!--            maintainAspectRatio: false,-->
+<!--            title: {-->
+<!--                display: true,-->
+<!--                text: '주간 요일별 게시물 작성 수'-->
+<!--            }-->
+<!--        }-->
+<!--    });</script>-->
+</div>
+
+<div class = "top3likes">
+
+</div>
+
+<div class="top3follow">
+
+</div>
+
+
+<div class="Sidebar">
+    <div class="categoryBar">
+        <div class="Profile">
+        </div>
+    </div>
+    <div class="Navlinks" >
+        <div class="categoryhome">
+            <div class="Vector"></div>
+            <img src="/css/home-lg-alt-1.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+        </div>
+        <div class="categoryuser">
+            <div class="Vector"></div>
+            <img src="/css/vector.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+
+        </div>
+        <div class="categorypost" >
+            <div class="Vector"></div>
+            <img src="/css/blue-note.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+        </div>
+        <div class="Board"><a href="post">게시글관리</a></div>
+        <div class="User"><a href="user">유저관리</a></div>
+        <div class="Home"><a href="home">Home</a></div>
+    </div>
+    <div class="Logo" style="width: 141.50px; height: 24px; left: 25px; top: 18px; position: absolute">
+        <div class="AdminPage" style="left: 12.50px; top: 0px; position: absolute; color: black; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Admin Page</div>
+        <div class="Line1" style="width: 23px; height: 0px; left: 0px; top: 0px; position: absolute; transform: rotate(90deg); transform-origin: 0 0; border: 2px #F8D442 solid"></div>
+    </div>
+</div>
+<div class="Header" style="width: 1170px; height: 60px; left: 270px; top: 0px; position: absolute">
+    <div class="optionbar">
+        <select class="selectpicker" id = "options">
+            <option value="이름" >이름</option>
+            <option value="내용">내용</option>
+        </select>
+    </div>
+    <div class="Search" >
+        <div class="SearchBar" ><input type="text" id="texts"></div>
+
+        <div class="innerSearch" ></div>
+        <div class="Searchbutton" >
+            <div class="Vector"></div>
+            <img src="/css/search-1.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+        </div>
+    </div>
+</div>
+</div>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url : "http://localhost:8080/tdl/admin/home",
+                type: 'GET',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                },
+                success: function (response) {
+                    if (response) {
+                        console.log(response)
+                        $('.TotalUser').empty();
+                        $('.Users').empty();
+                        $('.TotalPosts').empty();
+                        $('.Post').empty();
+                        $('.top3likes').empty();
+                        $('.top3follow').empty();
+                        $('.Profile').empty();
+
+                        var before = 0;
+                        var beforebefore = 0;
+                        var temp_totalUser=response.totalUser;
+                        if(temp_totalUser.length == 0){
+                            var before = 0;
+                        } else if(temp_totalUser.length == 1) {
+                            before=temp_totalUser[0].totalUser;
+                        }else {
+                            before=temp_totalUser[0].totalUser;
+                            beforebefore=temp_totalUser[1].totalUser;
+                        }
+                        var tendencyUser = before - beforebefore;
+                        var totaluser =` <div class="border_user_post"></div>
+                                        <div class="TotalUsername" >Total_User</div>
+                                        <div class="Vector2"></div>
+                                        <img src="/css/vector.png" style="width: 33.29px; height: 34px; left: 20px; top: 17px; position: absolute;">
+                                        <div class="totalusercount" >${before}</div>`
+                        $('.TotalUser').append(totaluser);
+
+                        var tendencyUsers = ` <div class="border_user_post"></div>
+                                        <div class="TotalUsername" >Total_User</div>
+                                        <div class="Vector2"></div>
+                                        <img src="/css/vector.png" style="width: 33.29px; height: 34px; left: 20px; top: 17px; position: absolute;">
+                                        <div class="totalusercount" >${tendencyUser}</div>`
+                        $('.Users').append(tendencyUsers);
+
+                        var beforePost = 0;
+                        var beforebeforePost = 0;
+                        var temp_totalPost=response.totalPost;
+                        if(temp_totalPost.length == 0){
+                            beforePost = 0;
+                        } else if(temp_totalPost.length == 1) {
+                            beforePost=temp_totalPost[0].totalPost;
+                        }else {
+                            beforePost=temp_totalPost[0].totalPost;
+                            beforebeforePost=temp_totalPost[1].totalPost;
+                        }
+
+                        var tendencyPost = beforePost - beforebeforePost;
+                        var tabletotalpost= `    <div class="border_user_post" ></div>
+                                                <div class="TotalPost">Total_Post</div>
+                                                <div class="Vector2"></div>
+                                                <img src="/css/blue-note.png" style="width: 33.29px; height: 34px; left: 20px; top: 17px; position: absolute;">
+                                                <div class="totalpostcount">${beforePost}</div>
+`
+                        $('.TotalPosts').append(tabletotalpost);
+
+                        var tabletendencypost= `  <div class="border_user_post"></div>
+                                                <div class="Posts">Post</div>
+                                                <div class="Vector2"></div>
+                                                <img src="/css/blue-note.png" style="width: 33.29px; height: 34px; left: 20px; top: 17px; position: absolute;">
+                                                <div class="posttendency">${tendencyPost}</div>`
+                        $('.Post').append(tabletendencypost);
+                        // <- 유저 , 게시글 숫자 채워넣기
+                        var week = [];
+                        var weekweek=[];
+                        var dayofweek=response.dayOfTheWeekResponse;
+                        if (dayofweek == null){
+                            weekweek = [0,0,0,0,0,0,0]
+                            week = [0,0,0,0,0,0,0]
+                        } else if(dayofweek.length==1){
+                            week.push(dayofweek[0].mon);
+                            week.push(dayofweek[0].tue);
+                            week.push(dayofweek[0].wed);
+                            week.push(dayofweek[0].thu);
+                            week.push(dayofweek[0].fri);
+                            week.push(dayofweek[0].sat);
+                            week.push(dayofweek[0].sun);
+                            weekweek = [0,0,0,0,0,0,0];
+                        } else {
+                            week.push(dayofweek[0].mon);
+                            week.push(dayofweek[0].tue);
+                            week.push(dayofweek[0].wed);
+                            week.push(dayofweek[0].thu);
+                            week.push(dayofweek[0].fri);
+                            week.push(dayofweek[0].sat);
+                            week.push(dayofweek[0].sun);
+                            weekweek.push(dayofweek[1].mon);
+                            weekweek.push(dayofweek[1].tue);
+                            weekweek.push(dayofweek[1].wed);
+                            weekweek.push(dayofweek[1].thu);
+                            weekweek.push(dayofweek[1].fri);
+                            weekweek.push(dayofweek[1].sat);
+                            weekweek.push(dayofweek[1].sun);
+                        }
+                        const chartArea = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(chartArea, {
+                            type: 'bar',
+                            data: {
+                                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                                datasets: [{
+                                    label: '저번주',
+                                    data: week,
+                                    backgroundColor: "rgba(255,0,0,1)"
+                                }, {
+                                    label: '저저번주',
+                                    data: weekweek,
+                                    backgroundColor: "rgba(0,0,255,1)"
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false, //default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: ' 2주간 요일별 게시글 작성 수'
+                                }
+
+                            },
+
+                        });
+
+                        new Chart(document.getElementById("pie-chart"), {
+                            type: 'pie',
+                            data: {
+                                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                                datasets: [{
+                                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                                    data: week}]},
+                            options: {
+                                maintainAspectRatio: false,
+                                title: {
+                                    display: true,
+                                    text: '주간 요일별 게시물 작성 수'}
+                            }
+                        });
+
+                        // <- 막대그래프 , 원그래프 데이터 넣어주기
+
+                        var tabletopthreelike=response.topThreeLike;
+                        if (tabletopthreelike.length == 0){
+                        } else if(tabletopthreelike.length==1){
+                            var likes=`<div className = "top3liketitle" > 가장많은좋아요를 받은게시글 </div>
+                            <div
+                                style="width: 436px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div
+                                    style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div className="top1like">
+                                        <img src=${tabletopthreelike[0].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div className="top3username" style="">${tabletopthreelike[0].username}</div>
+                                    <div className="top3postname" style="">${tabletopthreelike[0].content}</div>
+                                </div>
+                                <div className="top3postlikecnt">${tabletopthreelike[0].likeCount}</div>
+                            </div>`
+                            $('.top3likes').append(likes);
+
+                        }else if(tabletopthreelike.length==2){
+                            var likes=`<div className = "top3liketitle" > 가장많은 좋아요를 받은게시글 </div>
+                            <div
+                                style="width: 436px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div
+                                    style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div className="top1like">
+                                        <img src=${tabletopthreelike[0].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div className="top3username" style="">${tabletopthreelike[0].username}</div>
+                                    <div className="top3postname" style="">${tabletopthreelike[0].content}</div>
+                                </div>
+                                <div className="top3postlikecnt">${tabletopthreelike[0].likeCount}</div>
+                            </div>
+                            <div
+                                style="width: 436px; height: 44px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div
+                                    style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div className="top2like">
+                                        <img src=${tabletopthreelike[1].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div className="top3username" style="">${tabletopthreelike[1].username}</div>
+                                    <div className="top3postname" style="">${tabletopthreelike[1].content}</div>
+                                </div>
+                                <div className="top3postlikecnt">${tabletopthreelike[1].likeCount}</div>
+                            </div>`
+                            $('.top3likes').append(likes);
+
+                        }else {
+                            var likes=`<div className = "top3liketitle" > 가장많은좋아요를 받은게시글 </div>
+                            <div
+                                style="width: 436px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div
+                                    style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div className="top1like">
+                                        <img src=${tabletopthreelike[0].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div className="top3username" style="">${tabletopthreelike[0].username}</div>
+                                    <div className="top3postname" style="">${tabletopthreelike[0].content}</div>
+                                </div>
+                                <div className="top3postlikecnt">${tabletopthreelike[0].likeCount}</div>
+                            </div>
+                            <div
+                                style="width: 436px; height: 44px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div
+                                    style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div className="top2like">
+                                        <img src=${tabletopthreelike[1].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div className="top3username" style="">${tabletopthreelike[1].username}</div>
+                                    <div className="top3postname" style="">${tabletopthreelike[1].content}</div>
+                                </div>
+                                <div className="top3postlikecnt">${tabletopthreelike[1].likeCount}</div>
+                            </div>
+                                <div
+                                style="width: 436px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div
+                                    style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div className="top3like">
+                                        <img src=${tabletopthreelike[2].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div className="top3username" style="">${tabletopthreelike[2].username}</div>
+                                    <div className="top3postname" style="">${tabletopthreelike[2].content}</div>
+                                </div>
+                                <div className="top3postlikecnt">${tabletopthreelike[2].likeCount}</div>
+                            </div>`
+                            $('.top3likes').append(likes);
+
+
+                        var tabletopThreeFollowCount=response.topThreeFollowCount;
+                        if (tabletopThreeFollowCount.length == 0){
+                        } else if(tabletopThreeFollowCount.length==1){
+                            var lenthones = `
+                            <div class = "top3followtitle"style="">가장많은  팔로워수를 가진 유저</div>
+                            <div style="width: 427px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div class="top1follow">
+                                        <img src=${tabletopThreeFollowCount[0].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div class ="top3followusername">${tabletopThreeFollowCount[0].username}</div>
+                                </div>
+                                <div class="top3followcnt" >${tabletopThreeFollowCount[0].followCount}</div>
+                            </div>`
+                            $('.top3follow').append(lenthones);
+
+                        }else if(tabletopthreelike.length==2){
+                            var lenthones = `
+                            <div class = "top3followtitle"style="">가장많은  팔로워수를 가진 유저</div>
+                            <div style="width: 427px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div class="top1follow">
+                                        <img src=${tabletopThreeFollowCount[0].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div class ="top3followusername">${tabletopThreeFollowCount[0].username}</div>
+                                </div>
+                                <div class="top3followcnt" >${tabletopThreeFollowCount[0].followCount}</div>
+                            </div>
+
+                            <div style="width: 427px; height: 44px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div class="top2follow">
+                                        <img src=${tabletopThreeFollowCount[1].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div class ="top3followusername">${tabletopThreeFollowCount[1].username}</div>
+                                </div>
+                                <div class="top3followcnt" >${tabletopThreeFollowCount[1].followCount}</div>
+                            </div>`
+                            $('.top3follow').append(lenthones);
+
+                        }else {
+                            var lenthones = `
+                            <div class = "top3followtitle"style="">가장많은  팔로워수를 가진 유저</div>
+                            <div style="width: 427px; height: 43px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div class="top1follow">
+                                        <img src=${tabletopThreeFollowCount[0].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div class ="top3followusername">${tabletopThreeFollowCount[0].username}</div>
+                                </div>
+                                <div class="top3followcnt" >${tabletopThreeFollowCount[0].followCount}</div>
+                            </div>
+
+                            <div style="width: 427px; height: 44px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div class="top2follow">
+                                        <img src=${tabletopThreeFollowCount[1].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div class ="top3followusername">${tabletopThreeFollowCount[1].username}</div>
+                                </div>
+                                <div class="top3followcnt" >${tabletopThreeFollowCount[1].followCount}</div>
+                            </div>
+
+                            <div style="width: 427px; height: 44px; padding-right: 23.14px; justify-content: space-between; align-items: center; gap: 44.35px; display: inline-flex">
+                                <div style="height: 38.57px; justify-content: flex-start; align-items: center; gap: 72.31px; display: flex">
+                                    <div class="top3follows">
+                                        <img src=${tabletopThreeFollowCount[2].userImage} style="width: 42px; height: 38px">
+                                    </div>
+                                    <div class ="top3followusername">${tabletopThreeFollowCount[2].username}</div>
+                                </div>
+                                <div class="top3followcnt" >${tabletopThreeFollowCount[2].followCount}</div>
+                            </div>`
+                            $('.top3follow').append(lenthones);
+                        }
+                        // <- 상위 3명 제일많은 팔로워 , 상위 3개 제일많은 게시글 좋아요,
+
+                        var info_user=response.userResponseDto;
+
+                        var info_users=
+                            `<div class="AdminName">${info_user.username}</div>
+                            <div class="Admin">Admin</div>
+                            <div class="one">
+                            <img class="PexelsPhoto23790042" style="background: url(${info_user.userImage});width: 128px; height: 128px;background-repeat: no-repeat;  border-radius: 9999px; "/>
+                            </div>`
+                        $('.Profile').append(info_users);
+                    }
+                }
+            },
+                error : function (){
+                    console.log("실패")
+                }
+            })
+            $('.Board').click(function() {
+                window.location.href = 'http://localhost:8080/tdl/view/admin/post';
+            });
+            $('.User').click(function() {
+                window.location.href = 'http://localhost:8080/tdl/view/admin/user';
+            });
+            $('.Home').click(function() {
+                window.location.href = 'http://localhost:8080/tdl/view/admin/home';
+            });
+            $('.Logo').click(function() {
+                window.location.href = 'http://localhost:8080/tdl/post';
+            });
+            $(document).on('click',"div[class='Searchbutton']" , function (e) {
+                e.preventDefault();
+                var text =document.getElementById("texts").value;
+                var option = document.getElementById("options").value;
+                $.ajax({
+                    url: `http://localhost:8080/tdl/view/admin/search?tagId=${text}&option=${option}`,
+                    type: 'GET',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                    },
+                    success: function (response) {
+                        if (response) {
+                            window.location.href = `http://localhost:8080/tdl/view/admin/search?tagId=${text}&option=${option}`
+                        }
+                    }})
+            })}
+        )
+
+</script>
+</body>
+</html>

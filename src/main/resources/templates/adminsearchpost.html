@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 라이브러리 추가 -->
+    <title>post</title>
+</head>
+<style>
+    .Dashboard {
+        width: 1440px;
+        height: 910px;
+        position: relative;
+        background: #FDFDFD
+    }
+    .Sidebar {
+        width: 270px;
+        height: 950px;
+        left: 0px;
+        top: 0px;
+        position: absolute
+    }
+    .categoryBar {
+        width: 270px;
+        height: 950px;
+        left: 0px; top: 0px;
+        position: absolute;
+        background: #F2EAE1
+    }
+    .Profile {
+        width: 129px;
+        height: 196px;
+        left: 70px;
+        top: 96px;
+        position: absolute
+    }
+    .Admin {left: 41px;
+        top: 179px;
+        position: absolute;
+        color: #FEAF00;
+        font-size: 14px;
+        font-family: Montserrat;
+        font-weight: 500;
+        word-wrap: break-word
+    }
+    .one {
+        width: 128px;
+        height: 128px;
+        /* flex-shrink: 0; */
+        /* fill: #C4C4C4; */
+        left: 1px;
+        top: 0px;
+        position: absolute;
+        /* background: #C4C4C4; */
+        border-radius: 9999px
+    }
+    .AdminName {
+        width: 129px;
+        left: 0px;
+        top: 148px;
+        position: absolute;
+        text-align: center;
+        color: black;
+        font-size: 17px;
+        font-family: Montserrat;
+        font-weight: 700;
+        word-wrap: break-word
+
+    }
+    .Navlinks{
+        width: 193px; height: 497px; left: 39px; top: 372px; position: absolute
+    }
+    .categoryhome{
+        width: 19px; height: 17px; left: 41px; top: 11px; position: absolute
+    }
+    .Vector{
+        width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;
+    }
+    .categoryuser{
+        width: 19px; height: 17px; left: 41px; top: 71px; position: absolute;
+    }
+    .categorypost{
+        width: 19px; height: 17px; left: 40px; top: 131px; position: absolute
+    }
+    .Board{
+        left: 75px; top: 131px; position: absolute; color: black; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .User{
+        left: 75px; top: 72px; position: absolute; color: black; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .Home{
+        left: 75px; top: 11px; position: absolute; color: black; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .optionbar{
+        width: 1170px; height: 37px; left: 145px; top: 12px; position: absolute
+    }
+    .selectpicker{
+        display: inline; width: 100px; left: 500px; height:37px; font-size:10px;border-radius: 10px; border: 0.50px #E5E5E5 solid
+    }
+    .Search{
+        width: 900px; height: 37px; left: 265px; top: 12px; position: absolute
+    }
+    .SearchBar{
+        width: 900px; height: 37px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 8px; border: 0.50px #E5E5E5 solid
+    }
+    .innerSearch{
+        width: 59.15px; left: 13.49px; top: 9px; position: absolute; color: #C4C4C4; font-size: 14px; font-family: Montserrat; font-weight: 400; word-wrap: break-word
+    }
+    .Searchbutton{
+        width: 14.53px; height: 14px; left: 850px; top: 11px; position: absolute
+    }
+    .Vector2{
+        width: 33.29px; height: 34px; left: 20px; top: 17px; position: absolute; background: white; border: 0.50px
+    }
+    .TotalUser{
+        width: 220px; height: 157px; left: 425px; top: 81px; position: absolute
+    }
+    .border_user_post{
+        width: 220px; height: 157px; left: 0px; top: 0px; position: absolute; background: #FEF6FB; border-radius: 8px
+    }
+    .TotalUsername{
+        left: 20px; top: 73px; position: absolute; color: #6C6C6C; font-size: 14px; font-family: Montserrat; font-weight: 500; word-wrap: break-word
+    }
+    .totalusercount{
+        left: 107px; top: 105px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase; word-wrap: break-word
+    }
+    .totalusertendency{
+        width: 64px; left: 149px; top: 105px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase
+    }
+    .totayusertendency{
+        width: 64px; left: 149px; top: 105px; position: absolute; text-align: right; color: black; font-size: 30px; font-family: Montserrat; font-weight: 700; text-transform: uppercase
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+    section.notice {
+        padding: 80px 0;
+    }
+
+    .page-title {
+        margin-bottom: 60px;
+    }
+    .page-title h3 {
+        font-size: 28px;
+        color: #333333;
+        font-weight: 400;
+        text-align: center;
+    }
+
+    .board-table {
+        font-size: 13px;
+        width: 80%;
+        top: 150px;
+        left: 370px;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        position: absolute;
+
+
+    }
+    .board-table a {
+        color: #333;
+        display: inline-block;
+        line-height: 1.4;
+        word-break: break-all;
+        vertical-align: middle;
+    }
+    .board-table a:hover {
+        text-decoration: underline;
+    }
+    .board-table th {
+        text-align: center;
+    }
+
+    .board-table .th-num {
+        width: 100px;
+        text-align: center;
+    }
+
+    .board-table .th-date {
+        width: 200px;
+    }
+
+    .board-table th, .board-table td {
+        padding: 14px 0;
+    }
+
+    .board-table tbody td {
+        border-top: 1px solid #e7e7e7;
+        text-align: center;
+    }
+
+    .board-table tbody th {
+        padding-left: 28px;
+        padding-right: 14px;
+        border-top: 1px solid #e7e7e7;
+        text-align: left;
+    }
+
+    .board-table tbody th p{
+        display: none;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0 30px;
+        font-size: 15px;
+        font-weight: 400;
+        background: transparent;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        border: 1px solid transparent;
+        text-transform: uppercase;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        -ms-transition: all 0.3s;
+        -o-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    .btn-dark {
+        background: #555;
+        color: #fff;
+    }
+
+    .btn-dark:hover, .btn-dark:focus {
+        background: #373737;
+        border-color: #373737;
+        color: #fff;
+    }
+
+    .btn-dark {
+        background: #555;
+        color: #fff;
+    }
+
+    .btn-dark:hover, .btn-dark:focus {
+        background: #373737;
+        border-color: #373737;
+        color: #fff;
+    }
+
+    /* reset */
+
+    * {
+        list-style: none;
+        text-decoration: none;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    .clearfix:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+    .container {
+        width: 1100px;
+        margin: 0 auto;
+    }
+    .blind {
+        position: absolute;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        margin: -1px;
+        width: 1px;
+        height: 1px;
+    }
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .board_wrap {
+        width: 1000px;
+        margin: 100px auto;
+    }
+
+    .board_title {
+        margin-bottom: 30px;
+    }
+
+    .board_title strong {
+        font-size: 1rem;
+    }
+
+    .board_title p {
+        margin-top: 5px;
+        font-size: 1.4rem;
+    }
+
+    .bt_wrap {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 0;
+    }
+
+    .bt_wrap a {
+        display: inline-block;
+        min-width: 80px;
+        margin-left: 10px;
+        padding: 10px;
+        border: 1px solid #000;
+        border-radius: 2px;
+        font-size: 1.4rem;
+    }
+
+    .bt_wrap a:first-child {
+        margin-left: 0;
+    }
+
+    .bt_wrap a.on {
+        background: #000;
+        color: #fff;
+    }
+
+    .board_list {
+        width: 100%;
+        border-top: 2px solid #000;
+    }
+
+    .board_list > div {
+        border-bottom: 1px solid #ddd;
+        font-size: 0;
+    }
+
+    .board_list > div.top {
+        border-bottom: 1px solid #999;
+    }
+
+    .board_list > div:last-child {
+        border-bottom: 1px solid #000;
+    }
+
+    .board_list > div > div {
+        display: inline-block;
+        padding: 8px 0;
+        text-align: center;
+        font-size: 1.0rem;
+    }
+
+    .board_list > div.top > div {
+        font-weight: 600;
+    }
+
+    .board_list .num {
+        width: 10%;
+    }
+
+    .board_list .title {
+        width: 40%;
+        text-align: left;
+    }
+
+    .board_list .top .title {
+        text-align: center;
+    }
+
+    .board_list .fix{
+        width: 10%;
+    }
+    .board_list .delete{
+        width: 10%;
+    }
+
+    .board_list .writer {
+        width: 10%;
+
+    }
+
+    .board_list .date {
+        width: 10%;
+    }
+
+    .board_list .count {
+        width: 10%;
+    }
+
+    .board_page {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 0;
+    }
+
+    .board_page a {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        box-sizing: border-box;
+        vertical-align: middle;
+        border: 1px solid #ddd;
+        border-left: 0;
+        line-height: 100%;
+    }
+
+    .board_page a.bt {
+        padding-top: 5px;
+        font-size: 1.2rem;
+        letter-spacing: -1px;
+    }
+
+    .board_page a.num {
+        padding-top: 5px;
+        font-size: 1.2rem;
+    }
+
+    .board_page a.num.on {
+        border-color: #000;
+        background: #000;
+        color: #fff;
+    }
+
+    .board_page a:first-child {
+        border-left: 1px solid #ddd;
+    }
+
+
+    .enable-header {
+        text-align: center;
+        margin-top: 500px;
+    }
+    .image-thumbnail{
+        width: 18px;
+        height: 15px;
+    }
+    input[type=text]         {width: 900px; height: 37px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 8px; border: 0.50px #E5E5E5 solid}
+
+</style>
+<body>
+<div class="Dashboard">
+    <div class="Sidebar">
+        <div class="categoryBar">
+            <div class="Profile">
+            </div>
+        </div>
+        <div class="Navlinks" >
+            <div class="categoryhome">
+                <div class="Vector"></div>
+                <img src="/css/home-lg-alt-1.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+            </div>
+            <div class="categoryuser">
+                <div class="Vector"></div>
+                <img src="/css/vector.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+
+            </div>
+            <div class="categorypost" >
+                <div class="Vector"></div>
+                <img src="/css/blue-note.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+            </div>
+            <div class="Board">게시글관리</div>
+            <div class="User">유저관리</div>
+            <div class="Home">Home</div>
+        </div>
+        <div class="Logo" style="width: 141.50px; height: 24px; left: 25px; top: 18px; position: absolute">
+            <div class="AdminPage" style="left: 12.50px; top: 0px; position: absolute; color: black; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Admin Page</div>
+            <div class="Line1" style="width: 23px; height: 0px; left: 0px; top: 0px; position: absolute; transform: rotate(90deg); transform-origin: 0 0; border: 2px #F8D442 solid"></div>
+        </div>
+    </div>
+    <!--        <div class="Logo" style="width: 141.50px; height: 24px; left: 25px; top: 18px; position: absolute">-->
+    <!--                <div class="AdminPage" style="left: 12.50px; top: 0px; position: absolute; color: black; font-size: 20px; font-family: Montserrat; font-weight: 700; word-wrap: break-word">Admin Page</div>-->
+    <!--                <div class="Line1" style="width: 23px; height: 0px; left: 0px; top: 0px; position: absolute; transform: rotate(90deg); transform-origin: 0 0; border: 2px #F8D442 solid"></div>-->
+    <!--            </div> -->
+</div>
+<div class="Header" style="width: 1170px; height: 60px; left: 270px; top: 0px; position: absolute">
+    <div class="optionbar">
+        <select class="selectpicker" id = "options">
+            <option value="이름" >이름</option>
+            <option value="내용">내용</option>
+        </select>
+    </div>
+    <div class="Search" >
+        <div class="SearchBar" ><input type="text" id="texts"></div>
+
+        <div class="innerSearch" ></div>
+        <div class="Searchbutton" >
+            <div class="Vector"></div>
+            <img src="/css/search-1.png" style="width: 19px; height: 17px; left: 0px; top: -0px; position: absolute;">
+        </div>
+    </div>
+</div>
+</div>
+<div class="board_list_wrap" style="width: 70%; top: 250px; left: 400px; position: absolute; ">
+    <div class="board_list" id="board_lists">
+    </div>
+    <div class="board_page" , id="board_pages">
+    </div>
+    <p id="targetIdParagraph" style="display: none;">targetId: <span th:text="${tagId}"></span></p>
+    <p id="targetIdParagraphs" style="display: none;">targetId: <span th:text="${option}"></span></p>
+
+
+
+</div>
+</div>
+<script>
+    var boardNo = document.getElementById('targetIdParagraph').querySelector('span').innerText;
+    var boardNoss = document.getElementById('targetIdParagraphs').querySelector('span').innerText;
+    $(document).ready(function () {
+        $.ajax({
+            url: `http://localhost:8080/tdl/admin/search?page=1&option=${boardNoss}&info=${boardNo}`,
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+            },
+            success: function (response) {
+                if (response) {
+                    $('.board_list').empty();
+                    $('.board_page').empty();
+                    $('.Profile').empty();
+
+
+                    var top = `<div class="top">
+                        <div class="num">번호</div>
+                        <div class="title">내용</div>
+                        <div class="writer">글쓴이</div>
+                        <div class="date">작성일</div>
+                        <div class="count">좋아요</div>
+                        <div class="fix">수정</div>
+                        <div class="delete">삭제</div>
+                        </div>
+                    `
+                    $('.board_list').append(top);
+
+                    var boardList = response.adminPostList;
+
+                    for (var i = 0; i < boardList.length; i++) {
+                        var temp_boardList = boardList[i];
+                        var boardListHtmls = `<div>
+                                                <div class="num">${temp_boardList.id}</div>
+                                                <div class="title"><button class="btn" value=${temp_boardList.id}>${temp_boardList.content}</button></div>
+                                                <div class="writer">${temp_boardList.username}</div>
+                                                <div class="date">${temp_boardList.createdAt}</div>
+                                                <div class="count">${temp_boardList.likeCount}</div>
+                                                <div class="fix"><button class="btn" value=${temp_boardList.id}><img class="image-thumbnail" src="/css/white-black-edit.png"></button></div>
+                                                <div class="delete"><button class="btn" value=${temp_boardList.id}><img class="image-thumbnail" src="/css/black-trash.png"></button></div>
+                                             </div>`
+                        // 클릭시 삭제
+
+                        $('.board_list').append(boardListHtmls);
+
+                    }
+                    var info_user=response.userInfo;
+
+                    var info_users=
+                        `<div class="AdminName">${info_user.username}</div>
+                            <div class="Admin">Admin</div>
+                            <div class="one">
+                            <img class="PexelsPhoto23790042" style="background: url(${info_user.userImage});width: 128px; height: 128px;background-repeat: no-repeat;  border-radius: 9999px; "/>
+                            </div>`
+                    $('.Profile').append(info_users);
+
+
+                    var pageInfo = response.info;
+
+
+                    if (`${pageInfo.showPrev}` == "true") {
+                        var temp_page = `<a class="num" id = "${pageInfo.beginPage - 1}" , href="http://localhost:8080/api/board?category=카테고리2&page=${pageInfo.beginPage - 1}"/>&lt;</a>`
+                        $('.board_page').append(temp_page);
+                    }
+                    for (let i = pageInfo.beginPage; i <= pageInfo.endPage; i++) {
+                        var temp_page = `<a class="num" , id = ${i} , href="http://localhost:8080/api/board?category=카테고리2&page=${i}" >${i}</>`
+                        $('.board_page').append(temp_page)
+                    }
+                    if (`${pageInfo.showNext}` == "true") {
+                        var temp_page = `<a class="num"  id = "${pageInfo.endPage + 1}", href="http://localhost:8080/api/board?category=카테고리2&page=${pageInfo.endPage + 1}"/>&gt;</a>`
+                        $('.board_page').append(temp_page);
+                    }
+                } else {
+                    console.log("실패")
+                }
+            },
+            error: function () {
+                console.log("실패")
+            }
+        })
+        $("#board_pages").on('click', function (e) {
+            e.preventDefault();
+            var tagId = e.target.id
+            console.log(tagId)
+            // var taghref = $(`#${tagId}`).text();
+
+            $.ajax({
+                url: `http://localhost:8080/tdl/admin/search?page=${tagId}&option=${boardNoss}&info=${boardNo}`,
+                type: 'GET',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                },
+                success: function (response) {
+                    if (response) {
+                        $('.board_list').empty();
+                        $('.board_page').empty();
+
+                        var top = `<div class="top">
+                        <div class="num">번호</div>
+                        <div class="title">내용</div>
+                        <div class="writer">글쓴이</div>
+                        <div class="date">작성일</div>
+                        <div class="count">좋아요</div>
+                        <div class="fix">수정</div>
+                        <div class="delete">삭제</div>
+                        </div>
+                    `
+                        $('.board_list').append(top);
+
+                        var boardList = response.adminPostList;
+
+                        for (var i = 0; i < boardList.length; i++) {
+                            var temp_boardList = boardList[i];
+                            var boardListHtmls = `<div>
+                                                <div class="num">${temp_boardList.id}</div>
+                                                <div class="title"><button class="btn" value=${temp_boardList.id}>${temp_boardList.content}</button></div>
+                                                <div class="writer">${temp_boardList.username}</div>
+                                                <div class="date">${temp_boardList.createdAt}</div>
+                                                <div class="count">${temp_boardList.likeCount}</div>
+                                                <div class="fix"><button class="btn" value=${temp_boardList.id}><img class="image-thumbnail" src="/css/white-black-edit.png"></button></div>
+                                                <div class="delete"><button class="btn" value=${temp_boardList.id}><img class="image-thumbnail" src="/css/black-trash.png"></button></div>
+                                             </div>`
+                            // 클릭시 삭제
+
+                            $('.board_list').append(boardListHtmls);
+                        }
+                        var pageInfo = response.info;
+
+                        if (`${pageInfo.showPrev}` == "true") {
+                            var temp_page = `<a class="num" id = "${pageInfo.beginPage - 1}" , href="http://localhost:8080/api/board?category=카테고리2&page=${pageInfo.beginPage - 1}"/>&lt;</a>`
+                            $('.board_page').append(temp_page);
+                        }
+                        for (let i = pageInfo.beginPage; i <= pageInfo.endPage; i++) {
+                            var temp_page = `<a class="num" , id = ${i} , href="http://localhost:8080/api/board?category=카테고리2&page=${i}" >${i}</>`
+                            $('.board_page').append(temp_page)
+                        }
+                        if (`${pageInfo.showNext}` == "true") {
+                            var temp_page = `<a class="num"  id = "${pageInfo.endPage + 1}", href="http://localhost:8080/api/board?category=카테고리2&page=${pageInfo.endPage + 1}"/>&gt;</a>`
+                            $('.board_page').append(temp_page);
+                        }
+
+                        // 삭제 누르면 삭제
+                        // 제목 누르면 이동
+                        // 수정 누르면 이동
+                        // 검색버튼 클릭하면 이동
+                        // 카테고리별 클릭하면 이동
+
+                    } else {
+                        console.log('AJAX 요청 실패');
+                    }
+                },
+                error: function () {
+                    console.log('AJAX 요청 실패');
+                }
+            });
+        });
+        $('.Board').click(function() {
+            window.location.href = 'http://localhost:8080/tdl/view/admin/post';
+        });
+        $('.User').click(function() {
+            window.location.href = 'http://localhost:8080/tdl/view/admin/user';
+        });
+        $('.Home').click(function() {
+            window.location.href =
+                window.location.href = 'http://localhost:8080/tdl/view/admin/home';
+        });
+        $('.Logo').click(function() {
+            window.location.href = 'http://localhost:8080/tdl/post';
+        });
+
+
+        $(document).on('click',"div[class='delete']" , function (e) {
+            e.preventDefault();
+            var tagId = e.target.value
+            console.log(tagId)
+
+            $.ajax({
+                url: `http://localhost:8080/tdl/admin/post/${tagId}`,
+                type: 'DELETE',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                },
+                success: function (response) {
+                    if (response) {
+                        window.location.reload();
+                    }
+                }
+            })
+        })
+        $(document).on('click',"div[class='title']" , function (e) {
+            e.preventDefault();
+            var tagId = e.target.value
+            console.log(tagId)
+
+            $.ajax({
+                url: `http://localhost:8080/tdl/post/${tagId}`,
+                type: 'GET',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                },
+                success: function (response) {
+                    if (response) {
+                        window.location.href = `http://localhost:8080/tdl/post/${tagId}`;
+                    }
+                }
+            })
+        })
+        $(document).on('click',"div[class='fix']" , function (e) {
+            e.preventDefault();
+            var tagId = e.target.value
+            console.log(tagId)
+            $.ajax({
+                url: `http://localhost:8080/tdl/post/update/${tagId}`,
+                type: 'GET',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                },
+                success: function (response) {
+                    if (response) {
+                        window.location.href = `http://localhost:8080/tdl/post/update/${tagId}`;
+                    }
+                }
+            })
+
+        })
+        $(document).on('click',"div[class='Searchbutton']" , function (e) {
+            e.preventDefault();
+            var text =document.getElementById("texts").value;
+            var option = document.getElementById("options").value;
+            $.ajax({
+                url: `http://localhost:8080/tdl/view/admin/search?tagId=${text}&option=${option}`,
+                type: 'GET',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+                },
+                success: function (response) {
+                    if (response) {
+                        window.location.href = `http://localhost:8080/tdl/view/admin/search?tagId=${text}&option=${option}`
+                    }
+                }})
+        })
+    })
+
+
+</script>
+</body>
+</html>

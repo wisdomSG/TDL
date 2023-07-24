@@ -2,11 +2,8 @@ package com.tdl.tdl.jwt;
 
 import com.tdl.tdl.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.security.auth.Subject;
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j(topic = "Jwt 검증 필터")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -45,20 +38,28 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = jwtUtil.resolveToken(request);
-
+            String token = jwtUtil.getTokenFromCookie(request);
+            log.info(token);
             if (token != null) {
+              
                 jwtUtil.refreshAccessToken(token);
-
+                token = jwtUtil.substringToken(token);
+              
                 if (!jwtUtil.validateToken(token)) {
 
                     log.info("Token Error");
                 }
 
-                Claims info = jwtUtil.getUserInfoFromToken(token);
-                setAuthentication(info.getSubject());
-            }
 
+                Claims info = jwtUtil.getUserInfoFromToken(token);
+                try {
+                    // token 생성 시 subject에 username 넣어둠
+                    setAuthentication(info.getSubject());
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    return;
+                }
+            }
             log.info("AuthFilter -> filterChain");
             filterChain.doFilter(request, response);
         } catch (FileUploadException e) {
@@ -68,6 +69,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
+
 
 
 //
@@ -119,6 +121,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     // 인증 객체 생성
     private Authentication createAuthentication(String username) {
+        System.out.println("?");
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
