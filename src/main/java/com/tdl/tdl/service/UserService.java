@@ -95,7 +95,7 @@ public class UserService {
         // JWT 생성 및 헤더에 추가
         String token = jwtUtil.createToken(username, user.getRole()); // JWT 생성
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); // 헤더에 추가
-
+//        jwtUtil.addJwtToCookie(token, response);
         // RefreshToken 생성 및 Redis에 저장
         String refreshToken = jwtUtil.createRefreshToken(); // RefreshToken 생성
 
