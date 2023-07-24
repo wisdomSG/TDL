@@ -130,19 +130,20 @@
                         <span class="user_img"></span>
                         <span class="user" th:text="${comment.getProfileName()}">사용자</span>
                         <span class="userComment" th:text="${comment.getContent()}"></span>
+                        <input type="text" class="editCommentInput" style="display: none;" th:value="${comment.getContent()}"/>
                     </div>
 
                     <button class="likeHeart" th:onclick="|removeComm(${comment.getCommentId()})|">
                         <img src="/images/x.png" alt="삭제" style="width: 20px; height: 20px;">
                     </button>
-                    <button class="likeHeart" onclick="modifyComm()">
-                        <img src="/images/comment.jpg" alt="수정" style="width: 20px; height: 20px;">
+                    <button class="likeHeart" onclick="">
+                        <img src="/images/comment.jpg" alt="대댓글" style="width: 20px; height: 20px;">
                     </button>
                     <button class="likeHeart" onclick="pushHeart()" >
                         <img src="/images/like.jpg" alt="좋아요" style="width: 20px; height: 20px;">
                     </button>
-                    <button class="likeHeart" onclick="removeComm()">
-                        댓글
+                    <button class="likeHeart" th:onclick="|toggleEditInput(this, ${comment.getCommentId()})|">
+                        수정
                     </button>
                 </li>
             </ul>
@@ -263,6 +264,57 @@
             type: "DELETE",
             url:"/tdl/comment/"+commentId,
             contentType:"application/json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', auth);
+            },
+            success: function (data) {
+                alert("성공");
+                console.log(data);
+                window.location.href = '/tdl/post/'+postId;
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("업로드 실패 또는 오류 발생");
+            }
+        })
+    }
+    function toggleEditInput(button, commentId) {
+        const commentDiv = button.parentNode;
+        const userComment = commentDiv.querySelector('.userComment');
+        const editCommentInput = commentDiv.querySelector('.editCommentInput');
+
+        if (editCommentInput.style.display === 'none') {
+            userComment.style.display = 'none';
+            editCommentInput.style.display = 'inline-block';
+            editCommentInput.focus();
+            button.setAttribute('onclick', `modifyComm(${commentId})`);
+        } else {
+            userComment.style.display = 'inline-block';
+            editCommentInput.style.display = 'none';
+            button.setAttribute('onclick', 'toggleEditInput(this, ' + commentId + ')');
+        }
+    }
+    function modifyComm(commentId) {
+        // 댓글 입력창의 내용을 가져옵니다.
+        const commentInput = document.querySelector('.editCommentInput');
+        console.log(commentInput);
+        const content = commentInput.value.trim();
+
+        if (content === '') {
+            alert('댓글을 입력해주세요.');
+            return;
+        }
+
+        const commentRequest = {
+            content: content
+        };
+
+        const auth = getToken();
+        $.ajax({
+            type: "PATCH",
+            url: "/tdl/comment/"+postId,
+            contentType: "application/json",
+            data: JSON.stringify(commentRequest),
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', auth);
             },
