@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <title>프로필 조회</title>
+
+    <style>
+        .top {
+            background-color: aqua;
+            text-align: center;
+            margin-top: 80px;
+        }
+        table {
+            margin: auto;
+        }
+        .img {
+            border-radius: 50%;
+            margin-right: 100px;
+        }
+        .favoriteStyled {
+            border: 0;
+            height: 50px;
+            width: 200px;
+            line-height: 2.5;
+            padding: 0 20px;
+            font-size: 13px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 1px 1px 1px #000;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 1);
+            background-image: linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0));
+            box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+            position : relative;
+            bottom: 30px;
+        }
+        .username {
+            border: 0;
+            width: 150px;
+            height: 50px;
+            font-size: 30px;
+            background-color: rgba(255, 255, 255, 1);
+        }
+        .profile {
+            width: 30px;
+            text-align: center;
+        }
+        .introduction {
+            width: 400px;
+        }
+        .posts {
+            background-color: aqua;
+            margin-top: 50px;
+            text-align: center;
+        }
+        .post {
+            margin-right: 30px;
+        }
+
+        .font {
+            font-size: 40px;
+            text-align: left;
+        }
+
+    </style>
+
+    <script>
+        function open_box() {
+            popupWindow = window.open("/tdl/user/profile/check", "title", "resizeable");
+            popupWindow.resizeTo(400, 300);
+            popupWindow.onresize = (_ => {
+                popupWindow.resizeTo(400, 300);
+            })
+        }
+
+        $(document).ready(function () {
+            getUser(); // start 함수를 호출합니다.
+            getUserFollower();
+            getUserFollowing();
+            getUserPosts();
+            getUserPostCount();
+        });
+
+        function getUser(profilename) {
+            const url = window.location.href;
+            const parts = url.split('/');
+            const id = parts[parts.length - 1];
+            console.log(id); // 출력 결과: 1
+            $.ajax({
+                url: "/tdl/user/profile/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    const profileName = data['profileName'];
+                    const name = document.getElementById('profilename');
+                    name.innerText = profileName;
+                    console.log(profileName)
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+
+        function getUserPostCount(post) {
+            const url = window.location.href;
+            const parts = url.split('/');
+            const id = parts[parts.length - 1];
+            console.log(id); // 출력 결과: 1
+            $.ajax({
+                url: "/tdl/user/profile/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    const postCount = data['postCount'];
+                    const name = document.getElementById('post');
+                    name.innerText = postCount;
+                    console.log(postCount)
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+
+        function getUserFollower(follower) {
+            const url = window.location.href;
+            const parts = url.split('/');
+            const id = parts[parts.length - 1];
+            console.log(id); // 출력 결과: 1
+            $.ajax({
+                url: "/tdl/user/profile/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    const followersCount = data['followersCount'];
+                    const name = document.getElementById('follower');
+                    name.innerText = followersCount;
+                    console.log(followersCount)
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+
+        function getUserFollowing(following) {
+            const url = window.location.href;
+            const parts = url.split('/');
+            const id = parts[parts.length - 1];
+            console.log(id); // 출력 결과: 1
+            $.ajax({
+                url: "/tdl/user/profile/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    const followingCount = data['followingCount'];
+                    const name = document.getElementById('following');
+                    name.innerText = followingCount;
+                    console.log(followingCount)
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+
+        function getUserPosts(posts) {
+            const url = window.location.href;
+            const parts = url.split('/');
+            const id = parts[parts.length - 1];
+            console.log(id); // 출력 결과: 1
+            $.ajax({
+                url: "/tdl/user/profile/" + id,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    const postList = data['postList'];
+                    const name = document.getElementById('posts');
+                    name.innerText = postList;
+                    console.log(postList)
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1UZdD%2Fbtsog0ieWUP%2FOlgUkdKFUPHB1QTEPbMkVK%2Fimg.png" width="200px">
+
+
+    <table class="top">
+        <tr>
+            <td>
+                <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1UZdD%2Fbtsog0ieWUP%2FOlgUkdKFUPHB1QTEPbMkVK%2Fimg.png" class="img" width="180px" height="170px">
+            </td>
+
+            <td>
+                <a class="font" id="profilename">&nbsp;&nbsp;&nbsp;&nbsp;</a> 게시물&nbsp;&nbsp;&nbsp;&nbsp; 팔로워&nbsp;&nbsp;&nbsp;&nbsp;팔로잉<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="post"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="follower"></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="following"></a> <a id="introduction"></a>
+<!--                <input name="post"  class="profile" type = "text" placeholder=""/></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--                <input name="follower" class="profile" type = "text" placeholder=""/></input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--                <input name="following" class="profile" type = "text" placeholder=""/></input><br> <br>-->
+<!--                <input name="introduction" class="introduction" type = "text" placeholder=""/></input>-->
+                <br> <br> <br>
+                <button class="favoriteStyled" type="button">뭘 넣어야 할까요</button>
+                <button class="favoriteStyled" type="button" onclick="open_box()">프로필 수정</button>
+            </td>
+        </tr>
+    </table>
+
+    <div class="posts">
+        <img src="" class="posts" id="posts">
+    </div>
+</body>
+</html>

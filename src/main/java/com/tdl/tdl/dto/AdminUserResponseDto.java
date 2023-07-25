@@ -7,14 +7,14 @@ public class AdminUserResponseDto {
     private Long id;
     private String username;
     private String userImage;
-    private Long followCount;
+    private Long followersCount;
 
 
     public AdminUserResponseDto(User user) {
         this.id = user.getUserId();
         this.username = user.getUsername();
         this.userImage = user.getUserImage();
-        this.followCount = user.getFollowersCount();
+        this.followersCount = user.getFollowersCount();
     }
 
 }

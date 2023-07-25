@@ -15,6 +15,7 @@ public class UserResponseDto {
     private String userImage;
     private String profileName;
     private String introduction;
+    private Long postCount;
     private Long followersCount;
     private Long followingCount;
     private List<PostResponseDto> postList = new ArrayList<>();
@@ -25,6 +26,7 @@ public class UserResponseDto {
         this.introduction = user.getIntroduction();
         this.followersCount = user.getFollowersCount();
         this.followingCount = user.getFollowingCount();
+        this.postCount = user.getPostCount();
 
         if (user.getPostList().size() > 0) {
             for (Post post : user.getPostList()) {

@@ -6,6 +6,7 @@ import com.tdl.tdl.entity.*;
 import com.tdl.tdl.repository.PostImageRepository;
 import com.tdl.tdl.repository.PostLikeRepository;
 import com.tdl.tdl.repository.PostRepository;
+import com.tdl.tdl.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -23,6 +24,7 @@ public class PostService {
     private final MessageSource messageSource;
     private final PostLikeRepository postLikeRepository;
     private final AwsS3Service awsS3Service;
+    private final UserRepository userRepository;
 
     // 게시물 조회
     public List<PostResponseDto> getPosts() {
@@ -39,6 +41,8 @@ public class PostService {
         List<String> imgPaths = awsS3Service.uploadFile(requestDto.getMultipartFiles());
 
         Post post = postRepository.save(new Post(requestDto, imgPaths, user));
+        user.setPostCount(user.getPostCount() + 1);
+        userRepository.save(user);
         postRepository.save(post);
 
         List<String> imgList = new ArrayList<>();

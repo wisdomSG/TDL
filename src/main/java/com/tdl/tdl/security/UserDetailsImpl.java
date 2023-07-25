@@ -1,7 +1,6 @@
 package com.tdl.tdl.security;
 
 import com.tdl.tdl.entity.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -46,9 +46,12 @@ public class User extends Timestamped{
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-
     @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
     private List<Post> postList = new ArrayList<>();
+
+    @ColumnDefault("0")
+    @Column(name = "postCount", nullable = false)
+    private Long postCount;
 
     @ColumnDefault("0")
     @Column(name = "followersCount", nullable = false)
